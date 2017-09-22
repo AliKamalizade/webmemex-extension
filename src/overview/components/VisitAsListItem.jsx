@@ -12,7 +12,7 @@ import ImgFromPouch from './ImgFromPouch'
 import styles from './VisitAsListItem.css'
 import {deleteVisit, editVisit} from '../actions'
 import ReactDOM from 'react-dom'
-// import Cite from "citation-js"
+import Cite from "citation-js"
 
 const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) => {
     const href = hrefForLocalPage({page: doc.page})
