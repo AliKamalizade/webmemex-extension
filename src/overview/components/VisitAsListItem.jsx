@@ -37,38 +37,39 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
         [styles.available]: !!href,
     })
 
-    const numbers = [1, 2, 3, 4, 5] //
+    let numberOfCustomMetadata = 0
 
-    /**
-     * get
-     * */
+    //
     function getResult() {
-        const result = numbers.map((numbers) =>
-            <li key={numbers}>{numbers}</li>
+        const result = [...new Array(numberOfCustomMetadata)].map((el, i) =>
+            <li key={i}>
+                <Grid columns={2}>
+                    <GridRow>
+                        <GridColumn>
+                            <Input
+                                title={`New Metadata name`}
+                                placeholder={`New Metadata name`}
+                                defaultValue={'New metadata name'}
+                            />
+                        </GridColumn>
+                        <GridColumn>
+                            <Input
+                                title={`New Metadata value`}
+                                placeholder={`New Metadata value`}
+                            />
+                        </GridColumn>
+                    </GridRow>
+                </Grid>
+            </li>
         )
-        return <ul>{result}</ul>
+        return <ul className={styles.cleanerListStyle}>{result}</ul>
     }
 
+    // Add new metadata entry
     function addItem() {
-        numbers.push(Math.random())
-        ReactDOM.render(getResult(), document.getElementById('super'))
+        numberOfCustomMetadata++
+        ReactDOM.render(getResult(), document.getElementById('custom-metadata-container'))
     }
-
-    const templ = <div>
-        <GridColumn>
-            <Input
-                title={`New Metadata name`}
-                placeholder={`New Metadata name`}
-                defaultValue={'New metadata name'}
-            />
-        </GridColumn>
-        <GridColumn>
-            <Input
-                title={`New Metadata value`}
-                placeholder={`New Metadata value`}
-            />
-        </GridColumn>
-    </div>
 
     const hasFavIcon = !!(doc.page._attachments && doc.page._attachments.favIcon)
     const actionsContainer = (
@@ -120,18 +121,10 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
                             title={`Edit keywords`}
                             defaultValue={doc.page.content.keywords}
                         />
-                        {numbers.map(el =>
-                            <div key={el}>
-                                <Grid columns={2}>
-                                    <GridRow>
-                                        {templ}
-                                    </GridRow>
-                                </Grid>
-                            </div>
-                        )}
-                        <div id='super' />
+                        <h5>Custom metadata</h5>
+                        <div id='custom-metadata-container' />
                         <Button color='green' onClick={e => { addItem() }}>
-                            <Icon name='add' /> Add
+                            <Icon name='add' title={'Add new custom metadata'} /> Add
                         </Button>
                     </div>
                 </ModalContent>
