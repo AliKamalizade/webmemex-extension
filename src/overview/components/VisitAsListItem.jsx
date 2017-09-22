@@ -102,7 +102,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
                             iconPosition='left'
                             title='Edit description'
                             placeholder={`Description`}
-                            defaultValue={doc.page.content.description}
+                            defaultValue={doc.page.content? doc.page.content.description : null}
                         />
                         <Input
                             fluid
@@ -119,7 +119,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
                             iconPosition='left'
                             placeholder={`Keywords`}
                             title={`Edit keywords`}
-                            defaultValue={doc.page.content.keywords}
+                            defaultValue={doc.page.content? doc.page.content.keywords : null}
                         />
                         <h5>Custom metadata</h5>
                         <div id='custom-metadata-container' />
