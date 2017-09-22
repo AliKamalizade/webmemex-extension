@@ -2,7 +2,7 @@ import get from 'lodash/fp/get'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Button, Popup, Icon, Modal, Input, Header, ModalContent, ModalActions } from 'semantic-ui-react'
+import { Button, Popup, Icon, Modal, Input, Header, ModalContent, ModalActions, Grid, GridColumn, GridRow } from 'semantic-ui-react'
 import classNames from 'classnames'
 
 import { hrefForLocalPage } from 'src/page-viewer'
@@ -11,10 +11,20 @@ import niceTime from 'src/util/nice-time'
 import ImgFromPouch from './ImgFromPouch'
 import styles from './VisitAsListItem.css'
 import {deleteVisit, editVisit} from '../actions'
-
+import ReactDOM from 'react-dom'
+// import Cite from "citation-js"
 
 const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) => {
     const href = hrefForLocalPage({page: doc.page})
+
+    // const cited = new Cite('Q21972834')
+    // const output = cited.get({
+    //     format: 'string',
+    //     type: 'html',
+    //     style: 'citation-apa',
+    //     lang: 'en-US',
+    // })
+    // console.log(output)
 
     const pageSize = get(['_attachments', 'frozen-page.html', 'length'])(doc.page)
     const sizeInMB = pageSize !== undefined
@@ -27,38 +37,42 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
         [styles.available]: !!href,
     })
 
-    const hasFavIcon = !!(doc.page._attachments && doc.page._attachments.favIcon)
-    const deleteButton = (
-        <div>
-            <Popup
-                trigger={
-                    <Button
-                        icon='edit'
-                        onClick={e => { e.preventDefault() }}
-                        floated='right'
-                        tabIndex='-1'
-                    />
-                }
-                content={
-                    <div>
-                        <Button
-                            positive
-                            content={`Edit`}
-                            onClick={e => { onEditButtonClick() }}
-                            title={`Classify the saved web page`}
-                        />
-                        <Button
-                            negative
-                            content={`Forget this item`}
-                            onClick={e => { onTrashButtonClick() }}
-                            title={`Stored page size: ${sizeInMB} MB`}
-                        />
-                    </div>
-                }
-                on='focus'
-                hoverable
-                position='right center'
+    const numbers = [1, 2, 3, 4, 5] //
+
+    /**
+     * get
+     * */
+    function getResult() {
+        const result = numbers.map((numbers) =>
+            <li key={numbers}>{numbers}</li>
+        )
+        return <ul>{result}</ul>
+    }
+
+    function addItem() {
+        numbers.push(Math.random())
+        ReactDOM.render(getResult(), document.getElementById('super'))
+    }
+
+    const templ = <div>
+        <GridColumn>
+            <Input
+                title={`New Metadata name`}
+                placeholder={`New Metadata name`}
+                defaultValue={'New metadata name'}
             />
+        </GridColumn>
+        <GridColumn>
+            <Input
+                title={`New Metadata value`}
+                placeholder={`New Metadata value`}
+            />
+        </GridColumn>
+    </div>
+
+    const hasFavIcon = !!(doc.page._attachments && doc.page._attachments.favIcon)
+    const actionsContainer = (
+        <div>
             {/* TODO Modal dialog */}
             <Modal
                 closeIcon
@@ -70,44 +84,87 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
                         tabIndex='-1'
                     />
                 }>
-                <Header icon='edit' content='Edit' />
-                <ModalContent>
+                <Header icon='edit' content='Edit metadata' />
+                <ModalContent scrolling>
                     <div>
                         <Input
                             fluid
                             icon='search'
                             iconPosition='left'
+                            title='Edit title'
                             placeholder='Title'
-                            title={`Title`}
+                            defaultValue={doc.page.title}
+                        />
+                        <Input
+                            fluid
+                            icon='comment'
+                            iconPosition='left'
+                            title='Edit description'
+                            placeholder={`Description`}
+                            defaultValue={doc.page.content.description}
+                        />
+                        <Input
+                            fluid
+                            icon='world'
+                            iconPosition='left'
+                            placeholder='URL'
+                            title={`Edit URL`}
+                            type='url'
                             defaultValue={doc.page.url}
                         />
                         <Input
                             fluid
                             icon='tags'
                             iconPosition='left'
-                            placeholder='Keywords'
-                            title={`Keywords`}
+                            placeholder={`Keywords`}
+                            title={`Edit keywords`}
                             defaultValue={doc.page.content.keywords}
                         />
-                        <Input
-                            fluid
-                            icon='comment'
-                            iconPosition='left'
-                            placeholder='Description'
-                            title={`Description`}
-                            defaultValue={doc.page.content.description}
-                        />
+                        {numbers.map(el =>
+                            <div key={el}>
+                                <Grid columns={2}>
+                                    <GridRow>
+                                        {templ}
+                                    </GridRow>
+                                </Grid>
+                            </div>
+                        )}
+                        <div id='super' />
+                        <Button color='green' onClick={e => { addItem() }}>
+                            <Icon name='add' /> Add
+                        </Button>
                     </div>
                 </ModalContent>
                 <ModalActions>
                     <Button color='red' onClick={e => { onEditButtonClick() }}>
-                        <Icon name='remove' /> No
+                        <Icon name='remove' /> Cancel
                     </Button>
                     <Button color='green' onClick={e => { onEditButtonClick() }}>
-                        <Icon name='checkmark' /> Yes
+                        <Icon name='checkmark' /> Save
                     </Button>
                 </ModalActions>
             </Modal>
+            <Popup
+                trigger={
+                    <Button
+                        icon='delete'
+                        onClick={e => { e.preventDefault() }}
+                        floated='right'
+                        tabIndex='-1'
+                    />
+                }
+                content={
+                    <Button
+                        negative
+                        content={`Forget this item`}
+                        onClick={e => { onTrashButtonClick() }}
+                        title={`Stored page size: ${sizeInMB} MB`}
+                    />
+                }
+                on='focus'
+                hoverable
+                position='right center'
+            />
         </div>
     )
 
@@ -161,7 +218,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
                 <div className={styles.time}>{niceTime(doc.visitStart)}</div>
             </div>
             <div className={styles.buttonsContainer}>
-                {deleteButton}
+                {actionsContainer}
             </div>
         </a>
     )
