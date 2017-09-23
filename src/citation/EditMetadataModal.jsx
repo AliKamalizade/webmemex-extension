@@ -20,7 +20,8 @@ class EditMetadataModal extends React.Component {
     // Reinsert custom metadata when shown again
     componentDidUpdate (prevProps, prevState) {
         if (this.state.modalOpen && this.state.numberOfCustomMetadata > 0) {
-            console.log(this.customMetadata)
+            // console.log(this.customMetadata)
+            // console.log(this.customMetadataValues)
             ReactDOM.render(this.getCustomMetadataList(), document.getElementById('custom-metadata-container'))
         }
     }
@@ -42,7 +43,7 @@ class EditMetadataModal extends React.Component {
                     <GridRow>
                         <GridColumn>
                             <Input
-                                title={this.customMetadata[i]? this.customMetadata[i].inputRef.value : `New Metadata name`}
+                                title={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
                                 placeholder={`New Metadata name`}
                                 defaultValue={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
                                 ref={(input) => { this.customMetadata[i] = input }}
