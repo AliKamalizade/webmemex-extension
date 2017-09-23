@@ -1,6 +1,6 @@
-import { getAttachmentAsDataUri } from 'src/pouchdb'
+import { getAttachmentAsDataUrl } from 'src/pouchdb'
 import { remoteFunction } from 'src/util/webextensionRPC'
-import { hrefForLocalPage } from 'src/page-viewer'
+import { hrefForLocalPage } from 'src/local-page'
 
 
 const logActivePageVisit = remoteFunction('logActivePageVisit')
@@ -16,13 +16,15 @@ async function storeThisPage() {
         const { page: page_ } = await logActivePageVisit()
         page = page_
     } catch (err) {
-        // TODO Make clear to the user that storing the page failed.
-        console.error(err)
+        const errorMessageContent = document.getElementById('errorMessageContent')
+        const errorMessageDimmer = document.getElementById('errorMessageDimmer')
+        errorMessageContent.innerText = `Error: ${err && err.message}`
+        errorMessageDimmer.classList.add('active')
         return
     } finally {
         screenshotDimmer.classList.remove('active')
     }
-    const imgData = await getAttachmentAsDataUri({doc: page, attachmentId: 'screenshot'})
+    const imgData = await getAttachmentAsDataUrl({doc: page, attachmentId: 'screenshot'})
     screenshotImg.src = imgData
     const href = hrefForLocalPage({page})
     if (href) {
@@ -35,7 +37,7 @@ storeThisPage()
 const overviewButton = document.getElementById('overviewButton')
 overviewButton.onclick = async () => {
     await browser.tabs.create({
-        url: '/overview/overview.html',
+        url: '/overview.html',
     })
     window.close()
 }

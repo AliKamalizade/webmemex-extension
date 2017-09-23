@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Button, Popup, Icon } from 'semantic-ui-react'
 import classNames from 'classnames'
 
-import { hrefForLocalPage } from 'src/page-viewer'
+import { hrefForLocalPage } from 'src/local-page'
 import niceTime from 'src/util/nice-time'
 
 import ImgFromPouch from './ImgFromPouch'
@@ -98,9 +98,15 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
                 <div className={styles.url}>
                     <a
                         href={doc.page.url}
+                        target='_blank'
+                        title='Visit original location'
                     >
-                        {doc.page.url}
+                        <Icon
+                            name='external'
+                            link
+                        />
                     </a>
+                    <span>{doc.page.url}</span>
                 </div>
                 <div className={styles.time}>{niceTime(doc.visitStart)}</div>
             </div>
