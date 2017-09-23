@@ -3,14 +3,15 @@ import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Grid, G
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import styles from './EditMetadataModel.css'
-// A dialog which contains stored metadata. New metadata can be added
+// A dialog which contains stored metadata. New metadata can be added.
 class EditMetadataModal extends React.Component {
     constructor(props) {
         super(props)
         this.numberOfCustomMetadata = 0
+        this.pageTitle = document.title
         this.state = { modalOpen: false }
-        this.handleOpen = this.handleOpen.bind(this)
-        this.handleClose = this.handleClose.bind(this)
+        this.handleModalOpen = this.handleModalOpen.bind(this)
+        this.handleModalClose = this.handleModalClose.bind(this)
     }
 
     // Add new metadata entry
@@ -45,23 +46,25 @@ class EditMetadataModal extends React.Component {
         return <ul className={styles.cleanerListStyle}>{result}</ul>
     }
 
-    handleOpen () {
+    handleModalOpen () {
         this.setState({modalOpen: true})
+        document.title = 'Edit metadata'
     }
 
-    handleClose () {
-        return this.setState({modalOpen: false})
+    handleModalClose () {
+        this.setState({modalOpen: false})
+        document.title = this.pageTitle
     }
 
     render() {
         return <Modal
             closeIcon
             open={this.state.modalOpen}
-            onClose={this.handleClose}
+            onClose={this.handleModalClose}
             trigger={
                 <Button
                     icon='edit'
-                    onClick={e => { e.preventDefault(); this.handleOpen() }}
+                    onClick={e => { e.preventDefault(); this.handleModalOpen() }}
                     floated='right'
                     tabIndex='-1'
                     title={'Edit metadata of this page'}
@@ -111,7 +114,7 @@ class EditMetadataModal extends React.Component {
                 </div>
             </ModalContent>
             <ModalActions>
-                <Button color='red' negative onClick={this.handleClose}>
+                <Button color='red' negative onClick={this.handleModalClose}>
                     <Icon name='remove' /> Cancel
                 </Button>
                 <Button color='green' positive onClick={e => { this.props.onEditButtonClick() }}>
