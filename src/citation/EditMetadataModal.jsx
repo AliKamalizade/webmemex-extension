@@ -8,37 +8,49 @@ import Cite from "citation-js"
 class EditMetadataModal extends React.Component {
     constructor(props) {
         super(props)
-        this.numberOfCustomMetadata = 0
         this.pageTitle = document.title
-        this.state = { modalOpen: false, metadata: {} }
+        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0 }
         this.handleModalOpen = this.handleModalOpen.bind(this)
         this.handleModalClose = this.handleModalClose.bind(this)
         this.handleChange = this.handleChange.bind(this)
+        this.myInput = {}
+    }
+
+    // Reinsert custom metadata when shown again
+    componentDidUpdate (prevProps, prevState) {
+        if (this.state.modalOpen && this.state.numberOfCustomMetadata > 0) {
+            ReactDOM.render(this.getCustomMetadataList(), document.getElementById('custom-metadata-container'))
+        }
     }
 
     // Add new metadata entry
     addItem() {
-        this.numberOfCustomMetadata++
-        ReactDOM.render(this.getCustomMetadataList(this.numberOfCustomMetadata), document.getElementById('custom-metadata-container'))
+        const count = this.state.numberOfCustomMetadata + 1
+        ReactDOM.render(this.getCustomMetadataList(), document.getElementById('custom-metadata-container'))
+        this.setState({numberOfCustomMetadata: count})
+        console.log(this.myInput)
+        console.log(this.state)
     }
 
-    // Create custom metadata list
-    getCustomMetadataList(numberOfCustomMetadata) {
-        const result = [...new Array(numberOfCustomMetadata)].map((el, i) =>
+    // Create custom metadata list. Each entry consists of a label for a custom type of metadata and of its value
+    getCustomMetadataList() {
+        const result = [...new Array(this.state.numberOfCustomMetadata)].map((el, i) =>
             <li key={i}>
                 <Grid columns={2}>
                     <GridRow>
                         <GridColumn>
                             <Input
-                                title={`New Metadata name`}
+                                title={this.myInput[i]? this.myInput[i].inputRef.value : `New Metadata name`}
                                 placeholder={`New Metadata name`}
-                                defaultValue={'New metadata name'}
+                                ref={(input) => { this.myInput[i] = input }}
                             />
                         </GridColumn>
                         <GridColumn>
                             <Input
                                 title={`New Metadata value`}
                                 placeholder={`New Metadata value`}
+                                defaultValue={''}
+                                onChange={e => { this.handleChange(e, this.myInput[i].props.title) }}
                             />
                         </GridColumn>
                     </GridRow>
@@ -80,6 +92,7 @@ class EditMetadataModal extends React.Component {
         // this.getCitation('10.1145/641007.641053')
         // console.log(this.props.doc)
         // console.log(this.state)
+        // Insert default, obtained from saved page
         if (Object.keys(this.state.metadata).length === 0) {
             const defaultMetadata = {}
             defaultMetadata['Title'] = this.props.doc.page.title
