@@ -17,14 +17,7 @@ import Cite from "citation-js"
 const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) => {
     const href = hrefForLocalPage({page: doc.page})
 
-    // const cited = new Cite('Q21972834')
-    // const output = cited.get({
-    //     format: 'string',
-    //     type: 'html',
-    //     style: 'citation-apa',
-    //     lang: 'en-US',
-    // })
-    // console.log(output)
+    // getCitation('10.1145/641007.641053')
 
     const pageSize = get(['_attachments', 'frozen-page.html', 'length'])(doc.page)
     const sizeInMB = pageSize !== undefined
@@ -234,5 +227,21 @@ const mapDispatchToProps = (dispatch, {doc}) => ({
         return dispatch(editVisit({visitId: doc._id}))
     },
 })
+
+/**
+ *
+ * @param input DOI or Wikidata or BibTex or BibJSON or CSL-JSON.
+ * @return {Promise.<void>}
+ */
+async function getCitation(input) {
+    const data = await Cite.async(input)
+    const result = data.get({
+        format: 'string',
+        type: 'html',
+        style: 'citation-apa',
+        lang: 'en-US',
+    })
+    console.log(result)
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(VisitAsListItem)
