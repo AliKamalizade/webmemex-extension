@@ -64,12 +64,13 @@ class EditMetadataModal extends React.Component {
         console.log(result)
     }
 
+    // Called when an input is
     handleChange(e, identifier) {
-        const temp = this.state.metadata
+        const metadata = this.state.metadata
         // Update item
-        temp[identifier] = {identifier: identifier, value: e.target.value}
-        console.log(temp)
-        this.setState({metadata: temp})
+        metadata[identifier] = e.target.value
+        this.setState({metadata: metadata})
+        console.log(metadata)
         // console.log(e.target)
     }
 
@@ -77,19 +78,15 @@ class EditMetadataModal extends React.Component {
         this.setState({modalOpen: true})
         document.title = 'Edit metadata'
         // this.getCitation('10.1145/641007.641053')
-        console.log(this.props.doc)
-        console.log(this.state)
+        // console.log(this.props.doc)
+        // console.log(this.state)
         if (Object.keys(this.state.metadata).length === 0) {
-            const temp = {}
-            let title = this.props.doc.page.title
-            temp['Title'] = {identifier: 'Title', value: title}
-            let description = this.props.doc.page.content? this.props.doc.page.content.description : null
-            temp['Description'] = {identifier: 'Description', value: description}
-            let url = this.props.doc.page.url
-            temp['URL'] = {identifier: 'URL', value: url}
-            let keywords = this.props.doc.page.content? this.props.doc.page.content.keywords : null
-            temp['Keywords'] = {identifier: 'Keywords', value: keywords}
-            this.setState({metadata: temp})
+            const defaultMetadata = {}
+            defaultMetadata['Title'] = this.props.doc.page.title
+            defaultMetadata['Description'] = this.props.doc.page.content ? this.props.doc.page.content.description : null
+            defaultMetadata['URL'] = this.props.doc.page.url
+            defaultMetadata['Keywords'] = this.props.doc.page.content ? this.props.doc.page.content.keywords : null
+            this.setState({metadata: defaultMetadata})
         }
         // var windows = browser.windows.getAll({populate: true}).then(value => {
         //     console.log(value)
@@ -102,7 +99,6 @@ class EditMetadataModal extends React.Component {
     handleModalClose () {
         this.setState({modalOpen: false})
         document.title = this.pageTitle
-        // this.props.doc.page.content.keywords = this.state.metadata
     }
 
     render() {
@@ -128,7 +124,7 @@ class EditMetadataModal extends React.Component {
                         iconPosition='left'
                         title='Edit title'
                         placeholder='Title'
-                        defaultValue={this.state.metadata['Title']? this.state.metadata['Title'].value : null}
+                        defaultValue={this.state.metadata['Title']}
                         onChange={e => { this.handleChange(e, 'Title') }}
                     />
                     <Input
@@ -137,7 +133,7 @@ class EditMetadataModal extends React.Component {
                         iconPosition='left'
                         title='Edit description'
                         placeholder={`Description`}
-                        defaultValue={this.state.metadata['Description']? this.state.metadata['Description'].value : null}
+                        defaultValue={this.state.metadata['Description']}
                         onChange={e => { this.handleChange(e, 'Description') }}
                     />
                     <Input
@@ -147,7 +143,7 @@ class EditMetadataModal extends React.Component {
                         placeholder='URL'
                         title={`Edit URL`}
                         type='url'
-                        defaultValue={this.state.metadata['URL']? this.state.metadata['URL'].value : null}
+                        defaultValue={this.state.metadata['URL']}
                         onChange={e => { this.handleChange(e, 'URL') }}
                     />
                     <Input
@@ -158,7 +154,7 @@ class EditMetadataModal extends React.Component {
                         title={`Edit keywords`}
                         // ref={(input) => { this.myInput = input }}
                         onChange={e => { this.handleChange(e, 'Keywords') }}
-                        defaultValue={this.state.metadata['Keywords']? this.state.metadata['Keywords'].value : null}
+                        defaultValue={this.state.metadata['Keywords']}
                     />
                     <h5>Custom metadata</h5>
                     <div id='custom-metadata-container' />
