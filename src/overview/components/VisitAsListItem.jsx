@@ -2,7 +2,7 @@ import get from 'lodash/fp/get'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Button, Popup, Icon, Modal, Input, Header, ModalContent, ModalActions, Grid, GridColumn, GridRow } from 'semantic-ui-react'
+import { Button, Popup, Icon } from 'semantic-ui-react'
 import classNames from 'classnames'
 
 import { hrefForLocalPage } from 'src/page-viewer'
@@ -11,8 +11,8 @@ import niceTime from 'src/util/nice-time'
 import ImgFromPouch from './ImgFromPouch'
 import styles from './VisitAsListItem.css'
 import {deleteVisit, editVisit} from '../actions'
-import ReactDOM from 'react-dom'
 import Cite from "citation-js"
+import EditMetadataModal from "../../citation/EditMetadataModal"
 
 const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) => {
     const href = hrefForLocalPage({page: doc.page})
@@ -30,81 +30,11 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
         [styles.available]: !!href,
     })
 
-    let numberOfCustomMetadata = 0
-
-    // Add new metadata entry
-    function addItem() {
-        numberOfCustomMetadata++
-        ReactDOM.render(getResult(numberOfCustomMetadata), document.getElementById('custom-metadata-container'))
-    }
-
     const hasFavIcon = !!(doc.page._attachments && doc.page._attachments.favIcon)
     const actionsContainer = (
         <div>
             {/* TODO Modal dialog */}
-            <Modal
-                closeIcon
-                trigger={
-                    <Button
-                        icon='edit'
-                        onClick={e => { e.preventDefault() }}
-                        floated='right'
-                        tabIndex='-1'
-                        title={'Edit metadata of this page'}
-                    />
-                }>
-                <Header icon='edit' content='Edit metadata' />
-                <ModalContent scrolling>
-                    <div>
-                        <Input
-                            fluid
-                            icon='search'
-                            iconPosition='left'
-                            title='Edit title'
-                            placeholder='Title'
-                            defaultValue={doc.page.title}
-                        />
-                        <Input
-                            fluid
-                            icon='comment'
-                            iconPosition='left'
-                            title='Edit description'
-                            placeholder={`Description`}
-                            defaultValue={doc.page.content? doc.page.content.description : null}
-                        />
-                        <Input
-                            fluid
-                            icon='world'
-                            iconPosition='left'
-                            placeholder='URL'
-                            title={`Edit URL`}
-                            type='url'
-                            defaultValue={doc.page.url}
-                        />
-                        <Input
-                            fluid
-                            icon='tags'
-                            iconPosition='left'
-                            placeholder={`Keywords`}
-                            title={`Edit keywords`}
-                            defaultValue={doc.page.content? doc.page.content.keywords : null}
-                        />
-                        <h5>Custom metadata</h5>
-                        <div id='custom-metadata-container' />
-                        <Button color='green' onClick={e => { addItem() }}>
-                            <Icon name='add' title={'Add new custom metadata'} /> Add
-                        </Button>
-                    </div>
-                </ModalContent>
-                <ModalActions>
-                    <Button color='red' onClick={e => { onEditButtonClick() }}>
-                        <Icon name='remove' /> Cancel
-                    </Button>
-                    <Button color='green' onClick={e => { onEditButtonClick() }}>
-                        <Icon name='checkmark' /> Save
-                    </Button>
-                </ModalActions>
-            </Modal>
+            <EditMetadataModal doc={doc} onEditButtonClick={onEditButtonClick} />
             <Popup
                 trigger={
                     <Button
@@ -202,32 +132,6 @@ const mapDispatchToProps = (dispatch, {doc}) => ({
         return dispatch(editVisit({visitId: doc._id}))
     },
 })
-
-//
-function getResult(numberOfCustomMetadata) {
-    const result = [...new Array(numberOfCustomMetadata)].map((el, i) =>
-        <li key={i}>
-            <Grid columns={2}>
-                <GridRow>
-                    <GridColumn>
-                        <Input
-                            title={`New Metadata name`}
-                            placeholder={`New Metadata name`}
-                            defaultValue={'New metadata name'}
-                        />
-                    </GridColumn>
-                    <GridColumn>
-                        <Input
-                            title={`New Metadata value`}
-                            placeholder={`New Metadata value`}
-                        />
-                    </GridColumn>
-                </GridRow>
-            </Grid>
-        </li>
-    )
-    return <ul className={styles.cleanerListStyle}>{result}</ul>
-}
 
 /**
  *
