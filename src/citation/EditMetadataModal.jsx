@@ -13,12 +13,13 @@ class EditMetadataModal extends React.Component {
         this.handleModalOpen = this.handleModalOpen.bind(this)
         this.handleModalClose = this.handleModalClose.bind(this)
         this.handleChange = this.handleChange.bind(this)
-        this.myInput = {}
+        this.customMetadata = {}
     }
 
     // Reinsert custom metadata when shown again
     componentDidUpdate (prevProps, prevState) {
         if (this.state.modalOpen && this.state.numberOfCustomMetadata > 0) {
+            console.log(this.customMetadata)
             ReactDOM.render(this.getCustomMetadataList(), document.getElementById('custom-metadata-container'))
         }
     }
@@ -27,8 +28,8 @@ class EditMetadataModal extends React.Component {
     addItem() {
         const count = this.state.numberOfCustomMetadata + 1
         ReactDOM.render(this.getCustomMetadataList(), document.getElementById('custom-metadata-container'))
-        this.setState({numberOfCustomMetadata: count})
-        console.log(this.myInput)
+        this.setState({numberOfCustomMetadata: count, customMetadata: this.customMetadata})
+        console.log(this.customMetadata)
         console.log(this.state)
     }
 
@@ -40,9 +41,10 @@ class EditMetadataModal extends React.Component {
                     <GridRow>
                         <GridColumn>
                             <Input
-                                title={this.myInput[i]? this.myInput[i].inputRef.value : `New Metadata name`}
+                                title={this.customMetadata[i]? this.customMetadata[i].inputRef.value : `New Metadata name`}
                                 placeholder={`New Metadata name`}
-                                ref={(input) => { this.myInput[i] = input }}
+                                defaultValue={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
+                                ref={(input) => { this.customMetadata[i] = input }}
                             />
                         </GridColumn>
                         <GridColumn>
@@ -50,7 +52,7 @@ class EditMetadataModal extends React.Component {
                                 title={`New Metadata value`}
                                 placeholder={`New Metadata value`}
                                 defaultValue={''}
-                                onChange={e => { this.handleChange(e, this.myInput[i].props.title) }}
+                                onChange={e => { this.handleChange(e, this.customMetadata[i].props.title) }}
                             />
                         </GridColumn>
                     </GridRow>
