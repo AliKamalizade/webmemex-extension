@@ -32,36 +32,10 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
 
     let numberOfCustomMetadata = 0
 
-    //
-    function getResult() {
-        const result = [...new Array(numberOfCustomMetadata)].map((el, i) =>
-            <li key={i}>
-                <Grid columns={2}>
-                    <GridRow>
-                        <GridColumn>
-                            <Input
-                                title={`New Metadata name`}
-                                placeholder={`New Metadata name`}
-                                defaultValue={'New metadata name'}
-                            />
-                        </GridColumn>
-                        <GridColumn>
-                            <Input
-                                title={`New Metadata value`}
-                                placeholder={`New Metadata value`}
-                            />
-                        </GridColumn>
-                    </GridRow>
-                </Grid>
-            </li>
-        )
-        return <ul className={styles.cleanerListStyle}>{result}</ul>
-    }
-
     // Add new metadata entry
     function addItem() {
         numberOfCustomMetadata++
-        ReactDOM.render(getResult(), document.getElementById('custom-metadata-container'))
+        ReactDOM.render(getResult(numberOfCustomMetadata), document.getElementById('custom-metadata-container'))
     }
 
     const hasFavIcon = !!(doc.page._attachments && doc.page._attachments.favIcon)
@@ -76,6 +50,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
                         onClick={e => { e.preventDefault() }}
                         floated='right'
                         tabIndex='-1'
+                        title={'Edit metadata of this page'}
                     />
                 }>
                 <Header icon='edit' content='Edit metadata' />
@@ -227,6 +202,32 @@ const mapDispatchToProps = (dispatch, {doc}) => ({
         return dispatch(editVisit({visitId: doc._id}))
     },
 })
+
+//
+function getResult(numberOfCustomMetadata) {
+    const result = [...new Array(numberOfCustomMetadata)].map((el, i) =>
+        <li key={i}>
+            <Grid columns={2}>
+                <GridRow>
+                    <GridColumn>
+                        <Input
+                            title={`New Metadata name`}
+                            placeholder={`New Metadata name`}
+                            defaultValue={'New metadata name'}
+                        />
+                    </GridColumn>
+                    <GridColumn>
+                        <Input
+                            title={`New Metadata value`}
+                            placeholder={`New Metadata value`}
+                        />
+                    </GridColumn>
+                </GridRow>
+            </Grid>
+        </li>
+    )
+    return <ul className={styles.cleanerListStyle}>{result}</ul>
+}
 
 /**
  *
