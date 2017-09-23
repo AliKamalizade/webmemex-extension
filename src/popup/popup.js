@@ -51,3 +51,18 @@ const loggingEnabledCheckbox = document.getElementById('loggingEnabled')
 loggingEnabledCheckbox.onchange = async () => {
     browser.storage.local.set({loggingEnabled: loggingEnabledCheckbox.checked})
 }
+
+const selection = document.getElementById('selection')
+selection.onclick = async () => {
+    function onExecuted(result) {
+        console.log(result)
+    }
+    function onError(error) {
+        console.log(error)
+    }
+    const selectionScript = 'window.getSelection().toString()'
+    const executing = browser.tabs.executeScript({
+        code: selectionScript,
+    })
+    return executing.then(onExecuted, onError)
+}
