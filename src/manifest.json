@@ -40,7 +40,8 @@
         "storage",
         "tabs",
         "unlimitedStorage",
-        "webNavigation"
+        "webNavigation",
+        "activeTab"
     ],
     "web_accessible_resources": [
       "/lib/pdf.worker.min.js"
