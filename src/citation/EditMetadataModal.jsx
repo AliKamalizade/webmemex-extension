@@ -3,6 +3,7 @@ import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Grid, G
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import styles from './EditMetadataModel.css'
+// A dialog which contains stored metadata. New metadata can be added
 class EditMetadataModal extends React.Component {
     constructor(props) {
         super(props)
@@ -15,12 +16,11 @@ class EditMetadataModal extends React.Component {
     // Add new metadata entry
     addItem() {
         this.numberOfCustomMetadata++
-        console.log(this.numberOfCustomMetadata)
-        ReactDOM.render(this.render(), document.getElementById('custom-metadata-container'))
+        ReactDOM.render(this.getCustomMetadataList(this.numberOfCustomMetadata), document.getElementById('custom-metadata-container'))
     }
 
-    //
-    getResult(numberOfCustomMetadata) {
+    // Create custom metadata list
+    getCustomMetadataList(numberOfCustomMetadata) {
         const result = [...new Array(numberOfCustomMetadata)].map((el, i) =>
             <li key={i}>
                 <Grid columns={2}>
