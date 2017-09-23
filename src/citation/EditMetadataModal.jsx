@@ -7,7 +7,9 @@ class EditMetadataModal extends React.Component {
     constructor(props) {
         super(props)
         this.numberOfCustomMetadata = 0
-        // this.state = {};
+        this.state = { modalOpen: false }
+        this.handleOpen = this.handleOpen.bind(this)
+        this.handleClose = this.handleClose.bind(this)
     }
 
     // Add new metadata entry
@@ -43,13 +45,23 @@ class EditMetadataModal extends React.Component {
         return <ul className={styles.cleanerListStyle}>{result}</ul>
     }
 
+    handleOpen () {
+        this.setState({modalOpen: true})
+    }
+
+    handleClose () {
+        return this.setState({modalOpen: false})
+    }
+
     render() {
         return <Modal
             closeIcon
+            open={this.state.modalOpen}
+            onClose={this.handleClose}
             trigger={
                 <Button
                     icon='edit'
-                    onClick={e => { e.preventDefault() }}
+                    onClick={e => { e.preventDefault(); this.handleOpen() }}
                     floated='right'
                     tabIndex='-1'
                     title={'Edit metadata of this page'}
@@ -99,7 +111,7 @@ class EditMetadataModal extends React.Component {
                 </div>
             </ModalContent>
             <ModalActions>
-                <Button color='red' negative onClick={e => { this.props.onEditButtonClick() }}>
+                <Button color='red' negative onClick={this.handleClose}>
                     <Icon name='remove' /> Cancel
                 </Button>
                 <Button color='green' positive onClick={e => { this.props.onEditButtonClick() }}>
