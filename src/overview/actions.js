@@ -7,7 +7,7 @@ import { deleteVisitAndPage } from 'src/page-storage/deletion'
 import asyncActionCreator from 'src/util/redux-async-action-creator'
 
 import { ourState } from './selectors'
-import {classify} from "../../extension/classification-citation/classification"
+// import {classify} from "../../extension/classification-citation/classification"
 
 
 // == Simple commands to change the state in reducers ==
@@ -40,7 +40,7 @@ export function deleteVisit({visitId}) {
 export function editVisit({visitId}) {
     console.log(visitId)
     return async function (dispatch, getState) {
-        classify({visitId: 42})
+        // classify({visitId: 42})
     }
 }
 

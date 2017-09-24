@@ -9,10 +9,10 @@ class EditMetadataModal extends React.Component {
     constructor(props) {
         super(props)
         this.pageTitle = document.title
-        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0 }
+        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0, customMetadata: {} }
         this.handleModalOpen = this.handleModalOpen.bind(this)
         this.handleModalClose = this.handleModalClose.bind(this)
-        this.handleChange = this.handleChange.bind(this)
+        this.handleInputChange = this.handleInputChange.bind(this)
         this.customMetadata = {}
         this.customMetadataValues = {}
     }
@@ -22,17 +22,21 @@ class EditMetadataModal extends React.Component {
         if (this.state.modalOpen && this.state.numberOfCustomMetadata > 0) {
             // console.log(this.customMetadata)
             // console.log(this.customMetadataValues)
-            ReactDOM.render(this.getCustomMetadataList(), document.getElementById('custom-metadata-container'))
+            ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
         }
     }
 
     // Add new metadata entry
     addItem() {
         const count = this.state.numberOfCustomMetadata + 1
-        ReactDOM.render(this.getCustomMetadataList(), document.getElementById('custom-metadata-container'))
+        ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
         this.setState({numberOfCustomMetadata: count, customMetadata: this.customMetadata})
         console.log(this.customMetadata)
         console.log(this.state)
+    }
+
+    getCustomMetadataContainerDom(){
+        return document.getElementById('custom-metadata-container')
     }
 
     // Create custom metadata list. Each entry consists of a label for a custom type of metadata and of its value
@@ -55,7 +59,7 @@ class EditMetadataModal extends React.Component {
                                 placeholder={`New Metadata value`}
                                 defaultValue={this.customMetadataValues[i]? this.customMetadataValues[i].inputRef.value : null}
                                 ref={(input) => { this.customMetadataValues[i] = input }}
-                                onChange={e => { this.handleChange(e, this.customMetadata[i].props.title) }}
+                                onChange={e => { this.handleInputChange(e, this.customMetadata[i].props.title) }}
                             />
                         </GridColumn>
                     </GridRow>
@@ -82,7 +86,7 @@ class EditMetadataModal extends React.Component {
     }
 
     // Called when an input is
-    handleChange(e, identifier) {
+    handleInputChange(e, identifier) {
         const metadata = this.state.metadata
         // Update item
         metadata[identifier] = e.target.value
@@ -114,9 +118,19 @@ class EditMetadataModal extends React.Component {
         // }
     }
 
+    // Save edits in extension storage
     handleModalClose () {
         this.setState({modalOpen: false})
         document.title = this.pageTitle
+        const customMetadataToStore = {};
+        let length = Object.keys(this.customMetadata).length
+        for(let i = 0; i < length; i++){
+            customMetadataToStore[this.customMetadata[i].inputRef.value] = (this.customMetadataValues[i].inputRef.value)
+        }
+        const pageId = this.props.doc.page._id
+        browser.storage.local.set({[pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
+        console.log(browser.storage.local.get(null))
+        console.log(browser.storage.local.getBytesInUse())
     }
 
     render() {
@@ -143,7 +157,7 @@ class EditMetadataModal extends React.Component {
                         title='Edit title'
                         placeholder='Title'
                         defaultValue={this.state.metadata['Title']}
-                        onChange={e => { this.handleChange(e, 'Title') }}
+                        onChange={e => { this.handleInputChange(e, 'Title') }}
                     />
                     <Input
                         fluid
@@ -152,7 +166,7 @@ class EditMetadataModal extends React.Component {
                         title='Edit description'
                         placeholder={`Description`}
                         defaultValue={this.state.metadata['Description']}
-                        onChange={e => { this.handleChange(e, 'Description') }}
+                        onChange={e => { this.handleInputChange(e, 'Description') }}
                     />
                     <Input
                         fluid
@@ -162,7 +176,7 @@ class EditMetadataModal extends React.Component {
                         title={`Edit URL`}
                         type='url'
                         defaultValue={this.state.metadata['URL']}
-                        onChange={e => { this.handleChange(e, 'URL') }}
+                        onChange={e => { this.handleInputChange(e, 'URL') }}
                     />
                     <Input
                         fluid
@@ -171,7 +185,7 @@ class EditMetadataModal extends React.Component {
                         placeholder={`Keywords`}
                         title={`Edit keywords`}
                         // ref={(input) => { this.myInput = input }}
-                        onChange={e => { this.handleChange(e, 'Keywords') }}
+                        onChange={e => { this.handleInputChange(e, 'Keywords') }}
                         defaultValue={this.state.metadata['Keywords']}
                     />
                     <h5>Custom metadata</h5>
