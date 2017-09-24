@@ -15,6 +15,8 @@ class EditMetadataModal extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this)
         this.customMetadata = {}
         this.customMetadataValues = {}
+        this.defaultMetadata = {}
+        this.pageId = this.props.doc.page._id
     }
 
     // Reinsert custom metadata when shown again
@@ -23,12 +25,11 @@ class EditMetadataModal extends React.Component {
             // console.log(this.customMetadata)
             // console.log(this.customMetadataValues)
             ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
-            console.log(this.state.metadata)
         }
     }
 
     // Add new metadata entry
-    addItem() {
+    addNewMetadata() {
         const count = this.state.numberOfCustomMetadata + 1
         ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
         this.setState({numberOfCustomMetadata: count, customMetadata: this.customMetadata})
@@ -97,47 +98,46 @@ class EditMetadataModal extends React.Component {
     }
 
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
-    handleModalOpen () {
+    handleModalOpen() {
         this.setState({modalOpen: true})
         document.title = 'Edit metadata'
         // this.getCitation('10.1145/641007.641053')
         // console.log(this.props.doc)
-        // console.log(this.state)
         if (Object.keys(this.state.metadata).length === 0) {
             // Insert default metadata from page object
-            let defaultMetadata = {}
+            const defaultMetadata = {}
             defaultMetadata['Title'] = this.props.doc.page.title
             defaultMetadata['Description'] = this.props.doc.page.content ? this.props.doc.page.content.description : null
             defaultMetadata['URL'] = this.props.doc.page.url
             defaultMetadata['Keywords'] = this.props.doc.page.content ? this.props.doc.page.content.keywords : null
-            const pageId = this.props.doc.page._id
-            if (pageId !== null) {
+            if (this.pageId !== null) {
                 // Get all the metadata from storage
-                browser.storage.local.get(pageId).then((savedPage) => {
+                browser.storage.local.get(this.pageId).then((savedPage) => {
                     // Insert default user edited metadata from storage
-                    const storedDefaultMetadata = Object.keys(savedPage[pageId].defaultMetadata)
+                    const storedDefaultMetadata = Object.keys(savedPage[this.pageId].defaultMetadata)
                     const numberOfDefaultMetadata = storedDefaultMetadata.length
                     for (let i = 0; i < numberOfDefaultMetadata; i++) {
                         const key = storedDefaultMetadata[i]
-                        defaultMetadata[key] = savedPage[pageId].defaultMetadata[key]
+                        defaultMetadata[key] = savedPage[this.pageId].defaultMetadata[key]
                         console.log()
                     }
+                    this.setState({metadata: defaultMetadata})
+                    console.log(this.state)
                     // Insert custom metadata from storage
-                    const storedCustomMetadata = Object.keys(savedPage[pageId].customMetadata)
+                    const storedCustomMetadata = Object.keys(savedPage[this.pageId].customMetadata)
                     const numberOfCustomMetadata = storedCustomMetadata.length
                     this.setState({numberOfCustomMetadata: numberOfCustomMetadata})
                     ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
                     for (let i = 0; i < numberOfCustomMetadata; i++) {
-                        let key = storedCustomMetadata[i]
-                        let value = savedPage[pageId].customMetadata[key]
+                        const key = storedCustomMetadata[i]
+                        const value = savedPage[this.pageId].customMetadata[key]
                         this.customMetadata[i].inputRef.value = key
                         this.customMetadataValues[i].inputRef.value = value
                     }
-                    console.log(savedPage[pageId])
+                    console.log(savedPage[this.pageId])
                     console.log(this.customMetadata)
                 })
             }
-            console.log(defaultMetadata)
             this.setState({metadata: defaultMetadata})
         }
         // var windows = browser.windows.getAll({populate: true}).then(value => {
@@ -157,8 +157,7 @@ class EditMetadataModal extends React.Component {
         for (let i = 0; i < numberOfCustomMetadata; i++) {
             customMetadataToStore[this.customMetadata[i].inputRef.value] = (this.customMetadataValues[i].inputRef.value)
         }
-        const pageId = this.props.doc.page._id
-        browser.storage.local.set({[pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
+        browser.storage.local.set({[this.pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
         console.log(browser.storage.local.get(null))
         // console.log(browser.storage.local.getBytesInUse())
     }
@@ -186,7 +185,7 @@ class EditMetadataModal extends React.Component {
                         iconPosition='left'
                         title='Edit title'
                         placeholder='Title'
-                        defaultValue={this.state.metadata['Title']}
+                        value={this.state.metadata['Title']}
                         onChange={e => { this.handleInputChange(e, 'Title') }}
                     />
                     <Input
@@ -195,7 +194,7 @@ class EditMetadataModal extends React.Component {
                         iconPosition='left'
                         title='Edit description'
                         placeholder={`Description`}
-                        defaultValue={this.state.metadata['Description']}
+                        value={this.state.metadata['Description']}
                         onChange={e => { this.handleInputChange(e, 'Description') }}
                     />
                     <Input
@@ -205,7 +204,7 @@ class EditMetadataModal extends React.Component {
                         placeholder='URL'
                         title={`Edit URL`}
                         type='url'
-                        defaultValue={this.state.metadata['URL']}
+                        value={this.state.metadata['URL']}
                         onChange={e => { this.handleInputChange(e, 'URL') }}
                     />
                     <Input
@@ -216,11 +215,11 @@ class EditMetadataModal extends React.Component {
                         title={`Edit keywords`}
                         // ref={(input) => { this.myInput = input }}
                         onChange={e => { this.handleInputChange(e, 'Keywords') }}
-                        defaultValue={this.state.metadata['Keywords']}
+                        value={this.state.metadata['Keywords']}
                     />
                     <h5>Custom metadata</h5>
                     <div id='custom-metadata-container' />
-                    <Button color='green' onClick={e => { this.addItem() }}>
+                    <Button color='green' onClick={e => { this.addNewMetadata() }}>
                         <Icon name='add' title={'Add new custom metadata'} /> Add
                     </Button>
                 </div>
