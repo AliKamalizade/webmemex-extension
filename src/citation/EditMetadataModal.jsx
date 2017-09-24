@@ -35,7 +35,7 @@ class EditMetadataModal extends React.Component {
         console.log(this.state)
     }
 
-    getCustomMetadataContainerDom(){
+    getCustomMetadataContainerDom() {
         return document.getElementById('custom-metadata-container')
     }
 
@@ -88,7 +88,7 @@ class EditMetadataModal extends React.Component {
     // Called when an input is
     handleInputChange(e, identifier) {
         const metadata = this.state.metadata
-        // Update item
+        // Update item and store it
         metadata[identifier] = e.target.value
         this.setState({metadata: metadata})
         console.log(metadata)
@@ -109,6 +109,24 @@ class EditMetadataModal extends React.Component {
             defaultMetadata['URL'] = this.props.doc.page.url
             defaultMetadata['Keywords'] = this.props.doc.page.content ? this.props.doc.page.content.keywords : null
             this.setState({metadata: defaultMetadata})
+            const pageId = this.props.doc.page._id
+            if (pageId !== null) {
+                browser.storage.local.get(pageId).then((savedPage) => {
+                    const storedCustomMetadata = Object.keys(savedPage[pageId].customMetadata)
+                    const numberOfCustomMetadata = storedCustomMetadata.length
+                    console.log(storedCustomMetadata)
+                    this.state.numberOfCustomMetadata = numberOfCustomMetadata
+                    ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
+                    for (let i = 0; i < numberOfCustomMetadata; i++) {
+                        let key = storedCustomMetadata[i]
+                        let value = savedPage[pageId].customMetadata[key]
+                        this.customMetadata[i].inputRef.value = key
+                        this.customMetadataValues[i].inputRef.value = value
+                    }
+                    console.log(savedPage[pageId])
+                    console.log(this.customMetadata)
+                })
+            }
         }
         // var windows = browser.windows.getAll({populate: true}).then(value => {
         //     console.log(value)
@@ -122,9 +140,9 @@ class EditMetadataModal extends React.Component {
     handleModalClose () {
         this.setState({modalOpen: false})
         document.title = this.pageTitle
-        const customMetadataToStore = {};
-        let length = Object.keys(this.customMetadata).length
-        for(let i = 0; i < length; i++){
+        const customMetadataToStore = {}
+        const numberOfCustomMetadata = Object.keys(this.customMetadata).length
+        for (let i = 0; i < numberOfCustomMetadata; i++) {
             customMetadataToStore[this.customMetadata[i].inputRef.value] = (this.customMetadataValues[i].inputRef.value)
         }
         const pageId = this.props.doc.page._id
