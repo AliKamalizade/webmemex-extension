@@ -23,6 +23,7 @@ class EditMetadataModal extends React.Component {
             // console.log(this.customMetadata)
             // console.log(this.customMetadataValues)
             ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
+            console.log(this.state.metadata)
         }
     }
 
@@ -95,27 +96,36 @@ class EditMetadataModal extends React.Component {
         // console.log(e.target)
     }
 
+    // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
     handleModalOpen () {
         this.setState({modalOpen: true})
         document.title = 'Edit metadata'
         // this.getCitation('10.1145/641007.641053')
         // console.log(this.props.doc)
         // console.log(this.state)
-        // Insert default, obtained from saved page
         if (Object.keys(this.state.metadata).length === 0) {
-            const defaultMetadata = {}
+            // Insert default metadata from page object
+            let defaultMetadata = {}
             defaultMetadata['Title'] = this.props.doc.page.title
             defaultMetadata['Description'] = this.props.doc.page.content ? this.props.doc.page.content.description : null
             defaultMetadata['URL'] = this.props.doc.page.url
             defaultMetadata['Keywords'] = this.props.doc.page.content ? this.props.doc.page.content.keywords : null
-            this.setState({metadata: defaultMetadata})
             const pageId = this.props.doc.page._id
             if (pageId !== null) {
+                // Get all the metadata from storage
                 browser.storage.local.get(pageId).then((savedPage) => {
+                    // Insert default user edited metadata from storage
+                    const storedDefaultMetadata = Object.keys(savedPage[pageId].defaultMetadata)
+                    const numberOfDefaultMetadata = storedDefaultMetadata.length
+                    for (let i = 0; i < numberOfDefaultMetadata; i++) {
+                        const key = storedDefaultMetadata[i]
+                        defaultMetadata[key] = savedPage[pageId].defaultMetadata[key]
+                        console.log()
+                    }
+                    // Insert custom metadata from storage
                     const storedCustomMetadata = Object.keys(savedPage[pageId].customMetadata)
                     const numberOfCustomMetadata = storedCustomMetadata.length
-                    console.log(storedCustomMetadata)
-                    this.state.numberOfCustomMetadata = numberOfCustomMetadata
+                    this.setState({numberOfCustomMetadata: numberOfCustomMetadata})
                     ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
                     for (let i = 0; i < numberOfCustomMetadata; i++) {
                         let key = storedCustomMetadata[i]
@@ -127,6 +137,8 @@ class EditMetadataModal extends React.Component {
                     console.log(this.customMetadata)
                 })
             }
+            console.log(defaultMetadata)
+            this.setState({metadata: defaultMetadata})
         }
         // var windows = browser.windows.getAll({populate: true}).then(value => {
         //     console.log(value)
@@ -136,7 +148,7 @@ class EditMetadataModal extends React.Component {
         // }
     }
 
-    // Save edits in extension storage
+    // Close modal, revert title and save edits in extension storage
     handleModalClose () {
         this.setState({modalOpen: false})
         document.title = this.pageTitle
@@ -148,7 +160,7 @@ class EditMetadataModal extends React.Component {
         const pageId = this.props.doc.page._id
         browser.storage.local.set({[pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
         console.log(browser.storage.local.get(null))
-        console.log(browser.storage.local.getBytesInUse())
+        // console.log(browser.storage.local.getBytesInUse())
     }
 
     render() {
