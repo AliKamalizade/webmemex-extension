@@ -81,11 +81,12 @@ browser.commands.onCommand.addListener(command => {
 
 // Setup listener to enable to copy selected text by using context menu
 browser.runtime.onInstalled.addListener(function (details) {
+    const showForPages = ['about:srcdoc'];// chrome-extension://*/*
     browser.contextMenus.create({
         id: "log-selection",
         title: 'Store selected text with WebMemex',
         contexts: ['selection'],
-        // documentUrlPatternsOptional: ''
+        documentUrlPatterns: showForPages
     })
 })
 
