@@ -11,7 +11,7 @@
     "build-prod": "rm -rf ./extension && gulp build-prod",
     "build": "rm -rf ./extension && gulp build",
     "watch": "rm -rf ./extension && gulp watch",
-    "win-watch": "gulp watch",
+    "win-watch": "rd /s /q extension && gulp watch",
     "package": "gulp package",
     "test": "jest --verbose --config=.jest-config.json",
     "firefox": "web-ext -s extension run --bc",

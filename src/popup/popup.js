@@ -65,6 +65,7 @@ selection.onclick = async () => {
     const selectionScript = 'window.getSelection().toString()'
     const executing = browser.tabs.executeScript({
         code: selectionScript,
+        // file: '/classification/script.js',
     })
     return executing.then(onExecuted, onError)
 }

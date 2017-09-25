@@ -3,7 +3,7 @@ import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Grid, G
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import styles from './EditMetadataModel.css'
-import Cite from "citation-js"
+
 // A dialog which contains stored metadata. New metadata can be added.
 class EditMetadataModal extends React.Component {
     constructor(props) {
@@ -17,6 +17,7 @@ class EditMetadataModal extends React.Component {
         this.customMetadataValues = {}
         this.defaultMetadata = {}
         this.pageId = this.props.doc.page._id
+        this.openInGoogleScholar = this.openInGoogleScholar.bind(this)
     }
 
     // Reinsert custom metadata when shown again
@@ -36,7 +37,7 @@ class EditMetadataModal extends React.Component {
         console.log(this.customMetadata)
         console.log(this.state)
     }
-
+//https://scholar.google.com/scholar?q=memex
     getCustomMetadataContainerDom() {
         return document.getElementById('custom-metadata-container')
     }
@@ -69,22 +70,6 @@ class EditMetadataModal extends React.Component {
             </li>
         )
         return <ul className={styles.cleanerListStyle}>{result}</ul>
-    }
-
-    /**
-     *
-     * @param input DOI or Wikidata or BibTex or BibJSON or CSL-JSON.
-     * @return {Promise.<void>}
-     */
-    async getCitation(input) {
-        const data = await Cite.async(input)
-        const result = data.get({
-            format: 'string',
-            type: 'html',
-            style: 'citation-apa',
-            lang: 'en-US',
-        })
-        console.log(result)
     }
 
     // Called when an input is
@@ -162,6 +147,20 @@ class EditMetadataModal extends React.Component {
         // console.log(browser.storage.local.getBytesInUse())
     }
 
+    openInGoogleScholar () {
+        function onCreated(tab) {
+            console.log(`Created new tab: ${tab.id}`)
+        }
+        function onError(error) {
+            console.log(`Error: ${error}`);
+        }
+        const title = this.state.metadata['Title']
+        const creating = browser.tabs.create({
+            url: "https://scholar.google.com/scholar?q=" + title
+        });
+        creating.then(onCreated, onError);
+    }
+
     render() {
         return <Modal
             closeIcon
@@ -219,12 +218,15 @@ class EditMetadataModal extends React.Component {
                     />
                     <h5>Custom metadata</h5>
                     <div id='custom-metadata-container' />
-                    <Button color='green' onClick={e => { this.addNewMetadata() }}>
-                        <Icon name='add' title={'Add new custom metadata'} /> Add
+                    <Button color='green' title={'Add new custom metadata'}  onClick={e => { this.addNewMetadata() }}>
+                        <Icon name='add' /> Add
                     </Button>
                 </div>
             </ModalContent>
             <ModalActions>
+                <Button color='blue' title={'Results will be displayed in a new tab'} onClick={this.openInGoogleScholar}>
+                    <Icon name='search' /> Open in Google Scholar
+                </Button>
                 <Button color='red' negative onClick={this.handleModalClose}>
                     <Icon name='remove' /> Cancel
                 </Button>
