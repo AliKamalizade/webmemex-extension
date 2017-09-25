@@ -16,7 +16,7 @@ class EditMetadataModal extends React.Component {
         this.customMetadata = {}
         this.customMetadataValues = {}
         this.defaultMetadata = {}
-        this.pageId = this.props.doc.page._id
+        this.pageId = this.props.page._id
     }
 
     // Reinsert custom metadata when shown again
@@ -79,17 +79,19 @@ class EditMetadataModal extends React.Component {
 
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
     handleModalOpen() {
+        browser.storage.local.get('selectedText').then(value => {
+            console.log(value)
+        })
         this.setState({modalOpen: true})
         document.title = 'Edit metadata'
         // this.getCitation('10.1145/641007.641053')
-        // console.log(this.props.doc)
         if (Object.keys(this.state.metadata).length === 0) {
             // Insert default metadata from page object
             const defaultMetadata = {}
-            defaultMetadata['Title'] = this.props.doc.page.title
-            defaultMetadata['Description'] = this.props.doc.page.content ? this.props.doc.page.content.description : null
-            defaultMetadata['URL'] = this.props.doc.page.url
-            defaultMetadata['Keywords'] = this.props.doc.page.content ? this.props.doc.page.content.keywords : null
+            defaultMetadata['Title'] = this.props.page.title
+            defaultMetadata['Description'] = this.props.page.content ? this.props.page.content.description : null
+            defaultMetadata['URL'] = this.props.page.url
+            defaultMetadata['Keywords'] = this.props.page.content ? this.props.page.content.keywords : null
             if (this.pageId !== null) {
                 // Get all the metadata from storage
                 browser.storage.local.get(this.pageId).then((savedPage) => {
@@ -115,7 +117,6 @@ class EditMetadataModal extends React.Component {
                             this.customMetadataValues[i].inputRef.value = value
                         }
                     }
-                    console.log(savedPage[this.pageId])
                     console.log(this.customMetadata)
                 })
             }
@@ -148,7 +149,7 @@ class EditMetadataModal extends React.Component {
         }
         const title = this.state.metadata['Title']
         const creating = browser.tabs.create({
-            url: "https://scholar.google.com/scholar?q=" + title,
+            url: 'https://scholar.google.com/scholar?q=' + title,
         })
         creating.then(onCreated, onError)
     }
@@ -161,6 +162,7 @@ class EditMetadataModal extends React.Component {
             trigger={
                 <Button
                     icon='edit'
+                    id={this.pageId}
                     onClick={e => { e.preventDefault(); this.handleModalOpen() }}
                     floated='right'
                     tabIndex='-1'
@@ -230,7 +232,7 @@ class EditMetadataModal extends React.Component {
     }
 }
 EditMetadataModal.propTypes = {
-    doc: PropTypes.object,
+    page: PropTypes.object,
     onEditButtonClick: PropTypes.func,
 }
 export default EditMetadataModal

@@ -10,7 +10,7 @@ import shortUrl from 'src/util/short-url'
 import niceTime from 'src/util/nice-time'
 
 import ContentFrame from './ContentFrame'
-
+import EditMetadataModal from "../citation/EditMetadataModal"
 
 async function saveAs({page}) {
     const pageId = page._id
@@ -71,9 +71,11 @@ async function showPage(pageId) {
                     {niceTime(timestamp)}
                 </time>
             </span>
+            <EditMetadataModal page={page} />
             <Button
                 compact
                 size='tiny'
+                color='blue'
                 onClick={() => saveAs({page})}
             >
                 <Icon name='download' />
@@ -88,6 +90,17 @@ async function showPage(pageId) {
         </div>,
         document.getElementById('app')
     )
+    // Listen for event
+    browser.contextMenus.onClicked.addListener((info, tab) => {
+        console.log(tab)
+        switch (info.menuItemId) {
+            case 'log-selection':
+                console.log(info.selectionText)
+                browser.storage.local.set({'selectedText': info.selectionText})
+                document.getElementById(pageId).click()
+                break
+        }
+    })
 }
 
 // Read pageId from location: ?page=pageId

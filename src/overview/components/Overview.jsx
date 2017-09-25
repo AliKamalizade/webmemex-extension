@@ -21,7 +21,7 @@ class Overview extends React.Component {
             this.inputQueryEl.focus()
         }
         this.waitForLocalStorage()
-        this.setUp()
+        this.setTextSelectionListener()
     }
 
     async waitForLocalStorage () {
@@ -31,7 +31,7 @@ class Overview extends React.Component {
         })
     }
 
-    setUp() {
+    setTextSelectionListener() {
         browser.contextMenus.onClicked.addListener((info, tab) => {
             console.log(tab)
             console.log(info)

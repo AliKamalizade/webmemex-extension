@@ -30,7 +30,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, s
     const hasFavIcon = !!(doc.page._attachments && doc.page._attachments.favIcon)
     const actionsContainer = (
         <div>
-            <EditMetadataModal doc={doc} onEditButtonClick={onEditButtonClick} />
+            <EditMetadataModal page={doc.page} onEditButtonClick={onEditButtonClick} />
             <Popup
                 trigger={
                     <Button
