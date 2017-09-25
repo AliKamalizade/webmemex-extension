@@ -17,7 +17,6 @@ class EditMetadataModal extends React.Component {
         this.customMetadataValues = {}
         this.defaultMetadata = {}
         this.pageId = this.props.doc.page._id
-        this.openInGoogleScholar = this.openInGoogleScholar.bind(this)
     }
 
     // Reinsert custom metadata when shown again
@@ -134,17 +133,19 @@ class EditMetadataModal extends React.Component {
     }
 
     // Close modal, revert title and save edits in extension storage
-    handleModalClose () {
+    handleModalClose (performSave = false) {
         this.setState({modalOpen: false})
         document.title = this.pageTitle
-        const customMetadataToStore = {}
-        const numberOfCustomMetadata = Object.keys(this.customMetadata).length
-        for (let i = 0; i < numberOfCustomMetadata; i++) {
-            customMetadataToStore[this.customMetadata[i].inputRef.value] = (this.customMetadataValues[i].inputRef.value)
+        if(performSave){
+            const customMetadataToStore = {}
+            const numberOfCustomMetadata = Object.keys(this.customMetadata).length
+            for (let i = 0; i < numberOfCustomMetadata; i++) {
+                customMetadataToStore[this.customMetadata[i].inputRef.value] = (this.customMetadataValues[i].inputRef.value)
+            }
+            browser.storage.local.set({[this.pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
+            console.log(browser.storage.local.get(null))
+            // console.log(browser.storage.local.getBytesInUse())
         }
-        browser.storage.local.set({[this.pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
-        console.log(browser.storage.local.get(null))
-        // console.log(browser.storage.local.getBytesInUse())
     }
 
     openInGoogleScholar () {
@@ -165,7 +166,7 @@ class EditMetadataModal extends React.Component {
         return <Modal
             closeIcon
             open={this.state.modalOpen}
-            onClose={this.handleModalClose}
+            onClose={e => this.handleModalClose()}
             trigger={
                 <Button
                     icon='edit'
@@ -224,13 +225,13 @@ class EditMetadataModal extends React.Component {
                 </div>
             </ModalContent>
             <ModalActions>
-                <Button color='blue' title={'Results will be displayed in a new tab'} onClick={this.openInGoogleScholar}>
+                <Button color='blue' title={'Results will be displayed in a new tab'} onClick={e => this.openInGoogleScholar()}>
                     <Icon name='search' /> Open in Google Scholar
                 </Button>
-                <Button color='red' negative onClick={this.handleModalClose}>
+                <Button color='red' negative title={'Do not save changes'} onClick={e => this.handleModalClose()}>
                     <Icon name='remove' /> Cancel
                 </Button>
-                <Button color='green' positive onClick={e => { this.props.onEditButtonClick() }}>
+                <Button color='green' positive title={'Save changes'} onClick={e => this.handleModalClose(true)}> {/* this.props.onEditButtonClick() */ }
                     <Icon name='checkmark' /> Save
                 </Button>
             </ModalActions>
