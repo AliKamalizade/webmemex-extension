@@ -79,6 +79,15 @@ browser.commands.onCommand.addListener(command => {
     commandActions[command]()
 })
 
+// Setup listener to enable to copy selected text by using context menu
+browser.runtime.onInstalled.addListener(function handleInstalled(details) {
+    browser.contextMenus.create({
+        id: "log-selection",
+        title: 'WebMemex',
+        contexts: ['selection'],
+    })
+})
+
 // Run scripts that set their own event listeners.
 /* eslint-disable import/first */
 import 'src/activity-logger/background'
