@@ -90,13 +90,14 @@ async function showPage(pageId) {
         </div>,
         document.getElementById('app')
     )
-    // Listen for event
+    // Listen for event when. Trigger modal to open
     browser.contextMenus.onClicked.addListener((info, tab) => {
         console.log(tab)
         switch (info.menuItemId) {
             case 'log-selection':
                 console.log(info.selectionText)
                 browser.storage.local.set({'selectedText': info.selectionText})
+                // browser.storage.local.remove('selectedText')
                 document.getElementById(pageId).click()
                 break
         }

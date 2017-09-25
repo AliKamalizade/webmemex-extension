@@ -21,25 +21,12 @@ class Overview extends React.Component {
             this.inputQueryEl.focus()
         }
         this.waitForLocalStorage()
-        this.setTextSelectionListener()
     }
 
     async waitForLocalStorage () {
         return browser.storage.local.get().then((savedPage) => {
             this.savedPage = savedPage
             return savedPage
-        })
-    }
-
-    setTextSelectionListener() {
-        browser.contextMenus.onClicked.addListener((info, tab) => {
-            console.log(tab)
-            console.log(info)
-            switch (info.menuItemId) {
-                case 'log-selection':
-                    console.log(info.selectionText)
-                    break
-            }
         })
     }
 

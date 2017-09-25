@@ -80,7 +80,9 @@ class EditMetadataModal extends React.Component {
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
     handleModalOpen() {
         browser.storage.local.get('selectedText').then(value => {
-            console.log(value)
+            if(Object.keys(value).length > 0){
+                console.log(value)
+            }
         })
         this.setState({modalOpen: true})
         document.title = 'Edit metadata'
@@ -138,6 +140,7 @@ class EditMetadataModal extends React.Component {
             console.log(browser.storage.local.get(null))
             // console.log(browser.storage.local.getBytesInUse())
         }
+        browser.storage.local.remove('selectedText')
     }
 
     openInGoogleScholar () {
