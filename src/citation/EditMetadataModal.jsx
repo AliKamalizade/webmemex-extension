@@ -121,20 +121,6 @@ class EditMetadataModal extends React.Component {
             }
             this.setState({metadata: defaultMetadata})
         }
-        // var windows = browser.windows.getAll({populate: true}).then(value => {
-        //     console.log(value)
-        // })
-        // for (var extensionWindow of windows) {
-        //     console.log(extensionWindow.location.href)
-        // }
-        // TODO Move this
-        browser.contextMenus.onClicked.addListener((info, tab) => {
-            switch (info.menuItemId) {
-                case 'log-selection':
-                    console.log(info.selectionText)
-                    break
-            }
-        })
     }
 
     // Close modal, revert title and save edits in extension storage

@@ -52,6 +52,14 @@ async function showPage(pageId) {
 
     const bar = (
         <div id='bar'>
+            <Button
+                compact
+                size='tiny'
+                title={'Go back to overview'}
+                onClick={() => window.history.back()}
+            >
+                <Icon name='arrow left' />
+            </Button>
             <span id='description'>
                 <Icon name='camera' />
                 Snapshot of

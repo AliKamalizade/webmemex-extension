@@ -80,11 +80,12 @@ browser.commands.onCommand.addListener(command => {
 })
 
 // Setup listener to enable to copy selected text by using context menu
-browser.runtime.onInstalled.addListener(function handleInstalled(details) {
+browser.runtime.onInstalled.addListener(function (details) {
     browser.contextMenus.create({
         id: "log-selection",
-        title: 'WebMemex',
+        title: 'Store selected text with WebMemex',
         contexts: ['selection'],
+        // documentUrlPatternsOptional: ''
     })
 })
 
