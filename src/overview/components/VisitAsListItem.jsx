@@ -81,6 +81,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, s
                             className={styles.screenshot}
                             doc={doc.page}
                             attachmentId='screenshot'
+                            title={savedMetadata? savedMetadata.defaultMetadata['Description'] : doc.page.content.description}
                         />
                     )
                     : favIcon

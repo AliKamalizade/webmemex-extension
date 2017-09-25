@@ -127,10 +127,10 @@ class EditMetadataModal extends React.Component {
         // for (var extensionWindow of windows) {
         //     console.log(extensionWindow.location.href)
         // }
-        //TODO Move this
+        // TODO Move this
         browser.contextMenus.onClicked.addListener((info, tab) => {
             switch (info.menuItemId) {
-                case "log-selection":
+                case 'log-selection':
                     console.log(info.selectionText)
                     break
             }
