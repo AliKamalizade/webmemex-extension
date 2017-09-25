@@ -61,7 +61,6 @@ class EditMetadataModal extends React.Component {
                                 placeholder={`New Metadata value`}
                                 defaultValue={this.customMetadataValues[i]? this.customMetadataValues[i].inputRef.value : null}
                                 ref={(input) => { this.customMetadataValues[i] = input }}
-                                onChange={e => { this.handleInputChange(e, this.customMetadata[i].props.title) }}
                             />
                         </GridColumn>
                     </GridRow>
@@ -77,7 +76,6 @@ class EditMetadataModal extends React.Component {
         // Update item and store it
         metadata[identifier] = e.target.value
         this.setState({metadata: metadata})
-        console.log(metadata)
         // console.log(e.target)
     }
 
@@ -226,7 +224,7 @@ class EditMetadataModal extends React.Component {
             </ModalContent>
             <ModalActions>
                 <Button color='blue' title={'Results will be displayed in a new tab'} onClick={e => this.openInGoogleScholar()}>
-                    <Icon name='search' /> Open in Google Scholar
+                    <Icon name='student' /> Open in Google Scholar
                 </Button>
                 <Button color='red' negative title={'Do not save changes'} onClick={e => this.handleModalClose()}>
                     <Icon name='remove' /> Cancel
