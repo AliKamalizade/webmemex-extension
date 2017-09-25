@@ -12,10 +12,22 @@ import styles from './Overview.css'
 
 
 class Overview extends React.Component {
+    constructor(props) {
+        super(props)
+        this.savedPage = null
+    }
     componentDidMount() {
         if (this.props.grabFocusOnMount) {
             this.inputQueryEl.focus()
         }
+        this.waitForLocalStorage()
+    }
+
+    async waitForLocalStorage () {
+        return browser.storage.local.get().then((savedPage) => {
+            this.savedPage = savedPage
+            return savedPage
+        })
     }
 
     render() {
@@ -48,6 +60,7 @@ class Overview extends React.Component {
                         searchQuery={this.props.query}
                         onBottomReached={this.props.onBottomReached}
                         waitingForResults={this.props.waitingForResults}
+                        savedPage={this.savedPage}
                     />
                 </div>
             </div>

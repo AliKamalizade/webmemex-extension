@@ -72,6 +72,7 @@ const ResultList = ({
     searchQuery,
     waitingForResults,
     onBottomReached,
+    savedPage,
 }) => {
     // If there are no results, show a message.
     const noResultMessage = 'no results'
@@ -106,6 +107,7 @@ const ResultList = ({
                     <VisitAsListItem
                         compact={row.isContextualResult}
                         doc={row.doc}
+                        savedMetadata={savedPage[row.doc.page._id]}
                     />
                 </div>
             </li>
@@ -133,6 +135,7 @@ ResultList.propTypes = {
     searchQuery: PropTypes.string,
     waitingForResults: PropTypes.bool,
     onBottomReached: PropTypes.func,
+    savedPage: PropTypes.object,
 }
 
 export default ResultList

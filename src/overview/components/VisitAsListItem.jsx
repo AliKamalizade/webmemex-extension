@@ -13,7 +13,7 @@ import styles from './VisitAsListItem.css'
 import {deleteVisit, editVisit} from '../actions'
 import EditMetadataModal from "../../citation/EditMetadataModal"
 
-const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) => {
+const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, savedMetadata}) => {
     const href = hrefForLocalPage({page: doc.page})
 
     const pageSize = get(['_attachments', 'frozen-page.html', 'length'])(doc.page)
@@ -91,13 +91,13 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
                     className={styles.title}
                 >
                     {hasFavIcon && favIcon}
-                    <span title={doc.page.title}>
-                        {doc.page.title}
+                    <span title={savedMetadata? savedMetadata.defaultMetadata['Title'] : doc.page.title}>
+                        {savedMetadata? savedMetadata.defaultMetadata['Title'] : doc.page.title}
                     </span>
                 </div>
                 <div className={styles.url}>
                     <a
-                        href={doc.page.url}
+                        href={savedMetadata? savedMetadata.defaultMetadata['URL'] : doc.page.url}
                         target='_blank'
                         title='Visit original location'
                     >
@@ -106,7 +106,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick}) 
                             link
                         />
                     </a>
-                    <span>{doc.page.url}</span>
+                    <span>{savedMetadata? savedMetadata.defaultMetadata['URL'] : doc.page.url}</span>
                 </div>
                 <div className={styles.time}>{niceTime(doc.visitStart)}</div>
             </div>
@@ -122,6 +122,7 @@ VisitAsListItem.propTypes = {
     compact: PropTypes.bool,
     onTrashButtonClick: PropTypes.func,
     onEditButtonClick: PropTypes.func,
+    savedMetadata: PropTypes.object,
 }
 
 

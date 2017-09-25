@@ -22,8 +22,6 @@ class EditMetadataModal extends React.Component {
     // Reinsert custom metadata when shown again
     componentDidUpdate (prevProps, prevState) {
         if (this.state.modalOpen && this.state.numberOfCustomMetadata > 0) {
-            // console.log(this.customMetadata)
-            // console.log(this.customMetadataValues)
             ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
         }
     }
@@ -36,7 +34,7 @@ class EditMetadataModal extends React.Component {
         console.log(this.customMetadata)
         console.log(this.state)
     }
-//https://scholar.google.com/scholar?q=memex
+
     getCustomMetadataContainerDom() {
         return document.getElementById('custom-metadata-container')
     }
@@ -101,7 +99,6 @@ class EditMetadataModal extends React.Component {
                     for (let i = 0; i < numberOfDefaultMetadata; i++) {
                         const key = storedDefaultMetadata[i]
                         defaultMetadata[key] = savedPage[this.pageId].defaultMetadata[key]
-                        console.log()
                     }
                     this.setState({metadata: defaultMetadata})
                     console.log(this.state)
@@ -134,7 +131,7 @@ class EditMetadataModal extends React.Component {
     handleModalClose (performSave = false) {
         this.setState({modalOpen: false})
         document.title = this.pageTitle
-        if(performSave){
+        if (performSave) {
             const customMetadataToStore = {}
             const numberOfCustomMetadata = Object.keys(this.customMetadata).length
             for (let i = 0; i < numberOfCustomMetadata; i++) {
@@ -151,13 +148,13 @@ class EditMetadataModal extends React.Component {
             console.log(`Created new tab: ${tab.id}`)
         }
         function onError(error) {
-            console.log(`Error: ${error}`);
+            console.log(`Error: ${error}`)
         }
         const title = this.state.metadata['Title']
         const creating = browser.tabs.create({
-            url: "https://scholar.google.com/scholar?q=" + title
-        });
-        creating.then(onCreated, onError);
+            url: "https://scholar.google.com/scholar?q=" + title,
+        })
+        creating.then(onCreated, onError)
     }
 
     render() {
@@ -188,15 +185,6 @@ class EditMetadataModal extends React.Component {
                     />
                     <Input
                         fluid
-                        icon='comment'
-                        iconPosition='left'
-                        title='Edit description'
-                        placeholder={`Description`}
-                        value={this.state.metadata['Description']}
-                        onChange={e => { this.handleInputChange(e, 'Description') }}
-                    />
-                    <Input
-                        fluid
                         icon='world'
                         iconPosition='left'
                         placeholder='URL'
@@ -204,6 +192,15 @@ class EditMetadataModal extends React.Component {
                         type='url'
                         value={this.state.metadata['URL']}
                         onChange={e => { this.handleInputChange(e, 'URL') }}
+                    />
+                    <Input
+                        fluid
+                        icon='comment'
+                        iconPosition='left'
+                        title='Edit description'
+                        placeholder={`Description`}
+                        value={this.state.metadata['Description']}
+                        onChange={e => { this.handleInputChange(e, 'Description') }}
                     />
                     <Input
                         fluid
@@ -217,7 +214,7 @@ class EditMetadataModal extends React.Component {
                     />
                     <h5>Custom metadata</h5>
                     <div id='custom-metadata-container' />
-                    <Button color='green' title={'Add new custom metadata'}  onClick={e => { this.addNewMetadata() }}>
+                    <Button color='green' title={'Add new custom metadata'} onClick={e => { this.addNewMetadata() }}>
                         <Icon name='add' /> Add
                     </Button>
                 </div>
