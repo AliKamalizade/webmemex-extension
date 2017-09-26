@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Grid, GridColumn, GridRow, Dropdown } from 'semantic-ui-react'
+import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Dropdown } from 'semantic-ui-react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import {getCitation} from "./citation"
@@ -27,6 +27,20 @@ class EditCitationModal extends React.Component {
             },
             {
                 text: 'Vancouver',
+                value: 'citation-vancouver',
+            },
+        ]
+        this.inputOptions = [
+            {
+                text: 'BibTex',
+                value: 'BibText',
+            },
+            {
+                text: 'DOI',
+                value: 'DOI',
+            },
+            {
+                text: 'Wikidata',
                 value: 'citation-vancouver',
             },
         ]
@@ -134,68 +148,82 @@ class EditCitationModal extends React.Component {
     }
 
     getValueAsJson() {
-        return {
-            "publisher": {
-                "value": [
-                    "BioMed Central",
-                ],
-            },
-            "journal": {
-                "value": [
-                    "Journal of Ethnobiology and Ethnomedicine",
-                ],
-            },
-            "title": {
-                "value": [
-                    "Gitksan medicinal plants-cultural choice and efficacy",
-                ],
-            },
-            "authors": {
-                "value": [
-                    "Leslie Main Johnson",
-                ],
-            },
-            "date": {
-                "value": [
-                    "2006-06-21",
-                ],
-            },
-            "volume": {
-                "value": [
-                    "2",
-                ],
-            },
-            "issue": {
-                "value": [
-                    "1",
-                ],
-            },
-            "firstpage": {
-                "value": [
-                    "1",
-                ],
-            },
-            "fulltext_html": {
-                "value": [
-                    "http://ethnobiomed.biomedcentral.com/articles/10.1186/1746-4269-2-29",
-                ],
-            },
-            "fulltext_pdf": {
-                "value": [
-                    "http://ethnobiomed.biomedcentral.com/track/pdf/10.1186/1746-4269-2-29?site=http://ethnobiomed.biomedcentral.com",
-                ],
-            },
-            "license": {
-                "value": [
-                    "This article is published under license to BioMed Central Ltd. This is an Open Access article distributed under the terms of the Creative Commons Attribution License (http://creativecommons.org/licenses/by/2.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.",
-                ],
-            },
-            "copyright": {
-                "value": [
-                    "2006 Johnson; licensee BioMed Central Ltd.",
-                ],
-            },
-        }
+        const article = 'Steinbeck2003'
+        const author = 'Steinbeck, Christoph and Han, Yongquan and Kuhn, Stefan and Horlacher, Oliver and Luttmann, Edgar and Willighagen, Egon'
+        const year = 2003
+        const title = '{{' + 'The Chemistry Development Kit (CDK): an open-source Java library for Chemo- and Bioinformatics.' + '}}'
+        const journal = 'Journal of chemical information and computer sciences'
+        const volume = 43
+        const number = 2
+        const pages = '493--500'
+        const doi = '10.1021/ci025584y'
+        const isbn = '2214707786'
+        const issn = '0095-2338'
+        const pmid = '12653513'
+        const url = 'http://www.ncbi.nlm.nih.gov/pubmed/12653513'
+        return `@article{${article}, author = {${author}},year = {${year}},title = ${title},journal = {${journal}},volume = {${volume}},number = {${number}},pages = {${pages}},doi = {${doi}},isbn = {${isbn}},issn = {${issn}},pmid = {${pmid}},url = {${url}}}`
+        // return {
+        //     "publisher": {
+        //         "value": [
+        //             "BioMed Central",
+        //         ],
+        //     },
+        //     "journal": {
+        //         "value": [
+        //             "Journal of Ethnobiology and Ethnomedicine",
+        //         ],
+        //     },
+        //     "title": {
+        //         "value": [
+        //             "Gitksan medicinal plants-cultural choice and efficacy",
+        //         ],
+        //     },
+        //     "authors": {
+        //         "value": [
+        //             "Leslie Main Johnson",
+        //         ],
+        //     },
+        //     "date": {
+        //         "value": [
+        //             "2006-06-21",
+        //         ],
+        //     },
+        //     "volume": {
+        //         "value": [
+        //             "2",
+        //         ],
+        //     },
+        //     "issue": {
+        //         "value": [
+        //             "1",
+        //         ],
+        //     },
+        //     "firstpage": {
+        //         "value": [
+        //             "1",
+        //         ],
+        //     },
+        //     "fulltext_html": {
+        //         "value": [
+        //             "http://ethnobiomed.biomedcentral.com/articles/10.1186/1746-4269-2-29",
+        //         ],
+        //     },
+        //     "fulltext_pdf": {
+        //         "value": [
+        //             "http://ethnobiomed.biomedcentral.com/track/pdf/10.1186/1746-4269-2-29?site=http://ethnobiomed.biomedcentral.com",
+        //         ],
+        //     },
+        //     "license": {
+        //         "value": [
+        //             "This article is published under license to BioMed Central Ltd. This is an Open Access article distributed under the terms of the Creative Commons Attribution License (http://creativecommons.org/licenses/by/2.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.",
+        //         ],
+        //     },
+        //     "copyright": {
+        //         "value": [
+        //             "2006 Johnson; licensee BioMed Central Ltd.",
+        //         ],
+        //     },
+        // }
     }
 
     async onCitationClick() {
@@ -204,7 +232,6 @@ class EditCitationModal extends React.Component {
         const cite = await getCitation(value, this.state.selectedCitationOption)
         this.setState({citation: cite})
         getCitation('10.1145/641007.641053')
-        getCitation('10.1145/641007.641053', 'citation-apa')
     }
 
     render() {
@@ -270,15 +297,16 @@ class EditCitationModal extends React.Component {
                     />
                     <h5>Custom metadata</h5>
                     <div id='custom-citation-container' />
-                    <Dropdown placeholder='Select citation style' selection options={this.citationOptions} defaultValue={this.citationOptions[0].value} onChange={this.handleCitationSelectChange} />
+                    <Dropdown placeholder='Select citation style' title={'Select citation style'} selection options={this.citationOptions} onChange={this.handleCitationSelectChange} />
+                    <Dropdown placeholder='Select input' selection disabled defaultValue={this.inputOptions[0].value} options={this.inputOptions} />
                 </form>
-                <pre style={{ padding: '20px', whiteSpace: 'normal' }}>
+                <pre style={{ padding: '20px', whiteSpace: 'normal', border: '1px solid rgba(0,0,0,.15)' }}>
                     {this.state.citation}
                 </pre>
             </ModalContent>
             <ModalActions>
-                <Button color='red' negative title={'Do not save changes'} onClick={e => this.handleModalClose()}>
-                    <Icon name='remove' /> Cancel
+                <Button color='red' negative onClick={e => this.handleModalClose()}>
+                    <Icon name='remove' /> Close
                 </Button>
                 <Button color='green'
                         title={''}
