@@ -9,6 +9,7 @@ import { ourState } from '../selectors'
 import ResultList from './ResultList'
 import DateSelection from './DateSelection'
 import styles from './Overview.css'
+import StorageStatisticsModal from "../../statistics/StorageStatisticsModal";
 
 
 class Overview extends React.Component {
@@ -38,6 +39,7 @@ class Overview extends React.Component {
     }
 
     render() {
+        console.log(this.savedPages)
         return (
             <div>
                 <div
@@ -60,6 +62,7 @@ class Overview extends React.Component {
                         date={this.props.endDate}
                         onDateChange={this.props.onEndDateChange}
                     />
+                    {/*<StorageStatisticsModal page={}/>*/}
                 </div>
                 <div>
                     <ResultList
