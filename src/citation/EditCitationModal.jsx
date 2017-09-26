@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Dropdown } from 'semantic-ui-react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
-import {getCitation} from "./citation"
+import {getBibTexTypes, getCitation, getCitationStyles, getInputOptions} from "./citation"
 
 // A dialog for citations
 class EditCitationModal extends React.Component {
@@ -16,37 +16,13 @@ class EditCitationModal extends React.Component {
         this.customMetadataValues = {}
         this.defaultMetadata = {}
         this.pageId = this.props.page._id
-        this.citationOptions = [
-            {
-                text: 'APA',
-                value: 'citation-apa',
-            },
-            {
-                text: 'Harvard',
-                value: 'citation-harvard1',
-            },
-            {
-                text: 'Vancouver',
-                value: 'citation-vancouver',
-            },
-        ]
-        this.inputOptions = [
-            {
-                text: 'BibTex',
-                value: 'BibText',
-            },
-            {
-                text: 'DOI',
-                value: 'DOI',
-            },
-            {
-                text: 'Wikidata',
-                value: 'citation-vancouver',
-            },
-        ]
+        this.citationOptions = getCitationStyles()
+        this.inputOptions = getInputOptions()
+        this.bibTexTypes = getBibTexTypes()
         this.handleCitationSelectChange = this.handleCitationSelectChange.bind(this)
         this.onCitationClick = this.onCitationClick.bind(this)
-        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0, customMetadata: {}, citation: null, selectedCitationOption: this.citationOptions[0].value }
+        this.handleBibTexSelectChange = this.handleBibTexSelectChange.bind(this)
+        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0, customMetadata: {}, citation: null, selectedCitationOption: this.citationOptions[0].value, selectedBibTexOption: this.bibTexTypes[0].value }
     }
 
     // Reinsert custom metadata when shown again
@@ -94,6 +70,10 @@ class EditCitationModal extends React.Component {
 
     handleCitationSelectChange(e, {name, value}) {
         this.setState({selectedCitationOption: value})
+    }
+
+    handleBibTexSelectChange(e, {name, value}) {
+        this.setState({selectedBibTexOption: value})
     }
 
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
@@ -148,7 +128,8 @@ class EditCitationModal extends React.Component {
     }
 
     getValueAsJson() {
-        const article = 'Steinbeck2003'
+        const type = this.state.selectedBibTexOption
+        const generalName = 'Steinbeck2003'
         const author = 'Steinbeck, Christoph and Han, Yongquan and Kuhn, Stefan and Horlacher, Oliver and Luttmann, Edgar and Willighagen, Egon'
         const year = 2003
         const title = '{{' + 'The Chemistry Development Kit (CDK): an open-source Java library for Chemo- and Bioinformatics.' + '}}'
@@ -161,72 +142,14 @@ class EditCitationModal extends React.Component {
         const issn = '0095-2338'
         const pmid = '12653513'
         const url = 'http://www.ncbi.nlm.nih.gov/pubmed/12653513'
-        return `@article{${article}, author = {${author}},year = {${year}},title = ${title},journal = {${journal}},volume = {${volume}},number = {${number}},pages = {${pages}},doi = {${doi}},isbn = {${isbn}},issn = {${issn}},pmid = {${pmid}},url = {${url}}}`
-        // return {
-        //     "publisher": {
-        //         "value": [
-        //             "BioMed Central",
-        //         ],
-        //     },
-        //     "journal": {
-        //         "value": [
-        //             "Journal of Ethnobiology and Ethnomedicine",
-        //         ],
-        //     },
-        //     "title": {
-        //         "value": [
-        //             "Gitksan medicinal plants-cultural choice and efficacy",
-        //         ],
-        //     },
-        //     "authors": {
-        //         "value": [
-        //             "Leslie Main Johnson",
-        //         ],
-        //     },
-        //     "date": {
-        //         "value": [
-        //             "2006-06-21",
-        //         ],
-        //     },
-        //     "volume": {
-        //         "value": [
-        //             "2",
-        //         ],
-        //     },
-        //     "issue": {
-        //         "value": [
-        //             "1",
-        //         ],
-        //     },
-        //     "firstpage": {
-        //         "value": [
-        //             "1",
-        //         ],
-        //     },
-        //     "fulltext_html": {
-        //         "value": [
-        //             "http://ethnobiomed.biomedcentral.com/articles/10.1186/1746-4269-2-29",
-        //         ],
-        //     },
-        //     "fulltext_pdf": {
-        //         "value": [
-        //             "http://ethnobiomed.biomedcentral.com/track/pdf/10.1186/1746-4269-2-29?site=http://ethnobiomed.biomedcentral.com",
-        //         ],
-        //     },
-        //     "license": {
-        //         "value": [
-        //             "This article is published under license to BioMed Central Ltd. This is an Open Access article distributed under the terms of the Creative Commons Attribution License (http://creativecommons.org/licenses/by/2.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.",
-        //         ],
-        //     },
-        //     "copyright": {
-        //         "value": [
-        //             "2006 Johnson; licensee BioMed Central Ltd.",
-        //         ],
-        //     },
-        // }
+        return `@${type}{${generalName}, author = {${author}},year = {${year}},title = ${title},journal = {${journal}},volume = {${volume}},number = {${number}},pages = {${pages}},doi = {${doi}},isbn = {${isbn}},issn = {${issn}},pmid = {${pmid}},url = {${url}}}`
     }
 
     async onCitationClick() {
+        console.log(this.state)
+        console.log(this.defaultMetadata)
+        console.log(this.customMetadata)
+        console.log(this.customMetadataValues)
         const value = this.getValueAsJson()
         // getCitation('Q23571040')
         const cite = await getCitation(value, this.state.selectedCitationOption)
@@ -299,6 +222,7 @@ class EditCitationModal extends React.Component {
                     <div id='custom-citation-container' />
                     <Dropdown placeholder='Select citation style' title={'Select citation style'} selection options={this.citationOptions} onChange={this.handleCitationSelectChange} />
                     <Dropdown placeholder='Select input' selection disabled defaultValue={this.inputOptions[0].value} options={this.inputOptions} />
+                    <Dropdown placeholder='Select BibTex reference type' title={'Select BibTex reference type'} selection options={this.bibTexTypes} onChange={this.handleBibTexSelectChange} />
                 </form>
                 <pre style={{ padding: '20px', whiteSpace: 'normal', border: '1px solid rgba(0,0,0,.15)' }}>
                     {this.state.citation}
