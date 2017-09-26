@@ -73,7 +73,7 @@ const ResultList = ({
     waitingForResults,
     onBottomReached,
     savedPage,
-    parentCallbackToUpdateList
+    parentCallbackToUpdateList,
 }) => {
     // If there are no results, show a message.
     const noResultMessage = 'no results'

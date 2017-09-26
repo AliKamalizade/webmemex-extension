@@ -13,7 +13,7 @@ class EditMetadataModal extends React.Component {
         this.handleModalOpen = this.handleModalOpen.bind(this)
         this.handleModalClose = this.handleModalClose.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
-        this.customMetadata = {}
+        this.customMetadata = {} // contains references to custom metadata input fields
         this.customMetadataValues = {}
         this.defaultMetadata = {}
         this.pageId = this.props.page._id
@@ -80,7 +80,7 @@ class EditMetadataModal extends React.Component {
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
     handleModalOpen() {
         browser.storage.local.get('selectedText').then(value => {
-            if(Object.keys(value).length > 0){
+            if (Object.keys(value).length > 0) {
                 console.log(value)
             }
         })
@@ -120,6 +120,8 @@ class EditMetadataModal extends React.Component {
                         }
                     }
                     console.log(this.customMetadata)
+                    // console.log(savedPage[this.pageId])
+                    this.setState({customMetadata: savedPage[this.pageId].customMetadata})
                 })
             }
             this.setState({metadata: defaultMetadata})
@@ -141,6 +143,7 @@ class EditMetadataModal extends React.Component {
             // console.log(browser.storage.local.getBytesInUse())
             this.props.parentCallbackToUpdateList(this.state.metadata, this.pageId)
         }
+        // console.log(this.state)
         browser.storage.local.remove('selectedText')
     }
 
