@@ -139,6 +139,7 @@ class EditMetadataModal extends React.Component {
             browser.storage.local.set({[this.pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
             console.log(browser.storage.local.get(null))
             // console.log(browser.storage.local.getBytesInUse())
+            this.props.parentCallbackToUpdateList(this.state.metadata, this.pageId)
         }
         browser.storage.local.remove('selectedText')
     }
@@ -237,5 +238,6 @@ class EditMetadataModal extends React.Component {
 EditMetadataModal.propTypes = {
     page: PropTypes.object,
     onEditButtonClick: PropTypes.func,
+    parentCallbackToUpdateList: PropTypes.func,
 }
 export default EditMetadataModal

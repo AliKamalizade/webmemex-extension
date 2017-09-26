@@ -73,6 +73,7 @@ const ResultList = ({
     waitingForResults,
     onBottomReached,
     savedPage,
+    parentCallbackToUpdateList
 }) => {
     // If there are no results, show a message.
     const noResultMessage = 'no results'
@@ -92,6 +93,10 @@ const ResultList = ({
     const listItems = searchResult.rows.map((row, rowIndex) => {
         const { marginTop, showConnection, timestampComponent } = rowGaps[rowIndex]
 
+        function update(updatedMetadata, pageId) {
+            parentCallbackToUpdateList(updatedMetadata, pageId)
+        }
+
         return (
             <li
                 key={row.doc._id}
@@ -108,6 +113,7 @@ const ResultList = ({
                         compact={row.isContextualResult}
                         doc={row.doc}
                         savedMetadata={savedPage[row.doc.page._id]}
+                        parentCallbackToUpdateList={update}
                     />
                 </div>
             </li>
@@ -136,6 +142,7 @@ ResultList.propTypes = {
     waitingForResults: PropTypes.bool,
     onBottomReached: PropTypes.func,
     savedPage: PropTypes.object,
+    parentCallbackToUpdateList: PropTypes.func,
 }
 
 export default ResultList

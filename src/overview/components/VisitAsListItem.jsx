@@ -13,7 +13,7 @@ import styles from './VisitAsListItem.css'
 import {deleteVisit, editVisit} from '../actions'
 import EditMetadataModal from "../../citation/EditMetadataModal"
 
-const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, savedMetadata}) => {
+const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, savedMetadata, parentCallbackToUpdateList}) => {
     const href = hrefForLocalPage({page: doc.page})
 
     const pageSize = get(['_attachments', 'frozen-page.html', 'length'])(doc.page)
@@ -30,7 +30,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, s
     const hasFavIcon = !!(doc.page._attachments && doc.page._attachments.favIcon)
     const actionsContainer = (
         <div>
-            <EditMetadataModal page={doc.page} onEditButtonClick={onEditButtonClick} />
+            <EditMetadataModal page={doc.page} onEditButtonClick={onEditButtonClick} parentCallbackToUpdateList={update} />
             <Popup
                 trigger={
                     <Button
@@ -64,6 +64,10 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, s
             />
         )
         : <Icon size='big' name='file outline' className={styles.favIcon} />
+
+    function update(updatedMetadata, pageId) {
+        parentCallbackToUpdateList(updatedMetadata, pageId)
+    }
 
     return (
         <a
@@ -124,6 +128,7 @@ VisitAsListItem.propTypes = {
     onTrashButtonClick: PropTypes.func,
     onEditButtonClick: PropTypes.func,
     savedMetadata: PropTypes.object,
+    parentCallbackToUpdateList: PropTypes.func,
 }
 
 

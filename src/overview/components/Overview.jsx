@@ -14,7 +14,9 @@ import styles from './Overview.css'
 class Overview extends React.Component {
     constructor(props) {
         super(props)
-        this.savedPage = null
+        this.savedPages = null
+        this.state = {}
+        this.update = this.update.bind(this)
     }
     componentDidMount() {
         if (this.props.grabFocusOnMount) {
@@ -25,9 +27,14 @@ class Overview extends React.Component {
 
     async waitForLocalStorage () {
         return browser.storage.local.get().then((savedPage) => {
-            this.savedPage = savedPage
+            this.savedPages = savedPage
             return savedPage
         })
+    }
+
+    async update(updatedMetadata, pageId) {
+        this.savedPages[pageId].defaultMetadata = updatedMetadata
+        this.setState({})
     }
 
     render() {
@@ -60,7 +67,8 @@ class Overview extends React.Component {
                         searchQuery={this.props.query}
                         onBottomReached={this.props.onBottomReached}
                         waitingForResults={this.props.waitingForResults}
-                        savedPage={this.savedPage}
+                        savedPage={this.savedPages}
+                        parentCallbackToUpdateList={this.update}
                     />
                 </div>
             </div>
