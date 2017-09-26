@@ -12,6 +12,7 @@ import ImgFromPouch from './ImgFromPouch'
 import styles from './VisitAsListItem.css'
 import {deleteVisit, editVisit} from '../actions'
 import EditMetadataModal from "../../citation/EditMetadataModal"
+import EditCitationModal from "../../citation/EditCitationModal"
 
 const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, savedMetadata, parentCallbackToUpdateList}) => {
     const href = hrefForLocalPage({page: doc.page})
@@ -31,6 +32,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, s
     const actionsContainer = (
         <div>
             <EditMetadataModal page={doc.page} onEditButtonClick={onEditButtonClick} parentCallbackToUpdateList={update} />
+            <EditCitationModal page={doc.page} />
             <Popup
                 trigger={
                     <Button

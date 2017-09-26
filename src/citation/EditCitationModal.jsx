@@ -1,14 +1,14 @@
 import React from 'react'
-import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Grid, GridColumn, GridRow } from 'semantic-ui-react'
+import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Grid, GridColumn, GridRow, Dropdown } from 'semantic-ui-react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
+import {getCitation} from "./citation"
 
-// A dialog which contains stored metadata. New metadata can be added.
-class EditMetadataModal extends React.Component {
+// A dialog for citations
+class EditCitationModal extends React.Component {
     constructor(props) {
         super(props)
         this.pageTitle = document.title
-        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0, customMetadata: {} }
         this.handleModalOpen = this.handleModalOpen.bind(this)
         this.handleModalClose = this.handleModalClose.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
@@ -16,7 +16,23 @@ class EditMetadataModal extends React.Component {
         this.customMetadataValues = {}
         this.defaultMetadata = {}
         this.pageId = this.props.page._id
-        // this.handleChange = this.handleChange.bind(this)
+        this.citationOptions = [
+            {
+                text: 'APA',
+                value: 'citation-apa',
+            },
+            {
+                text: 'Harvard',
+                value: 'citation-harvard1',
+            },
+            {
+                text: 'Vancouver',
+                value: 'citation-vancouver',
+            },
+        ]
+        this.handleCitationSelectChange = this.handleCitationSelectChange.bind(this)
+        this.onCitationClick = this.onCitationClick.bind(this)
+        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0, customMetadata: {}, citation: null, selectedCitationOption: this.citationOptions[0].value }
     }
 
     // Reinsert custom metadata when shown again
@@ -26,23 +42,8 @@ class EditMetadataModal extends React.Component {
         }
     }
 
-    // Add new metadata entry
-    addNewMetadata(selectedText) {
-        const count = this.state.numberOfCustomMetadata + 1
-        ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
-        this.setState({numberOfCustomMetadata: count, customMetadata: this.customMetadata})
-        // if user has selected text and clicked context menu item: fill in selected text as value
-        if (selectedText) {
-            this.customMetadataValues[count - 1].inputRef.value = selectedText
-            browser.storage.local.remove('selectedText')
-            this.setState({numberOfCustomMetadata: count, customMetadata: this.customMetadata})
-        }
-        console.log(this.customMetadata)
-        console.log(this.state)
-    }
-
     getCustomMetadataContainerDom() {
-        return document.getElementById('custom-metadata-container')
+        return document.getElementById('custom-citation-container')
     }
 
     // Create custom metadata list. Each entry consists of a label for a custom type of metadata and of its value
@@ -80,10 +81,6 @@ class EditMetadataModal extends React.Component {
         return <ul style={{ listStyle: 'none' }}>{result}</ul>
     }
 
-    // handleChange(param) {
-    //     console.log(param)
-    // }
-
     // Called when an input is modified
     handleInputChange(e, identifier) {
         const metadata = this.state.metadata
@@ -93,10 +90,14 @@ class EditMetadataModal extends React.Component {
         // console.log(e.target)
     }
 
+    handleCitationSelectChange(e, {name, value}) {
+        this.setState({selectedCitationOption: value})
+    }
+
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
     handleModalOpen() {
         this.setState({modalOpen: true})
-        document.title = 'Edit metadata'
+        document.title = 'Citation'
         if (Object.keys(this.state.metadata).length === 0) {
             // Insert default metadata from page object
             const defaultMetadata = {}
@@ -136,46 +137,86 @@ class EditMetadataModal extends React.Component {
             }
             this.setState({metadata: defaultMetadata})
         }
-        // get selected text and add a new metadata item if not null
-        browser.storage.local.get('selectedText').then(value => {
-            if (Object.keys(value).length > 0) {
-                this.addNewMetadata(value.selectedText)
-            }
-        })
     }
 
     // Close modal, revert title and save edits in extension storage
-    handleModalClose (performSave = false) {
+    handleModalClose () {
         this.setState({modalOpen: false})
         document.title = this.pageTitle
-        if (performSave) {
-            const customMetadataToStore = {}
-            const numberOfCustomMetadata = Object.keys(this.customMetadata).length
-            for (let i = 0; i < numberOfCustomMetadata; i++) {
-                customMetadataToStore[this.customMetadata[i].inputRef.value] = (this.customMetadataValues[i].inputRef.value)
-            }
-            browser.storage.local.set({[this.pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
-            console.log(browser.storage.local.get(null))
-            // console.log(browser.storage.local.getBytesInUse())
-            if (this.props.parentCallbackToUpdateList) {
-                this.props.parentCallbackToUpdateList(this.state.metadata, this.pageId)
-            }
-        }
-        // console.log(this.state)
     }
 
-    openInGoogleScholar () {
-        function onCreated(tab) {
-            console.log(`Created new tab: ${tab.id}`)
+    getValueAsJson() {
+        return {
+            "publisher": {
+                "value": [
+                    "BioMed Central",
+                ],
+            },
+            "journal": {
+                "value": [
+                    "Journal of Ethnobiology and Ethnomedicine",
+                ],
+            },
+            "title": {
+                "value": [
+                    "Gitksan medicinal plants-cultural choice and efficacy",
+                ],
+            },
+            "authors": {
+                "value": [
+                    "Leslie Main Johnson",
+                ],
+            },
+            "date": {
+                "value": [
+                    "2006-06-21",
+                ],
+            },
+            "volume": {
+                "value": [
+                    "2",
+                ],
+            },
+            "issue": {
+                "value": [
+                    "1",
+                ],
+            },
+            "firstpage": {
+                "value": [
+                    "1",
+                ],
+            },
+            "fulltext_html": {
+                "value": [
+                    "http://ethnobiomed.biomedcentral.com/articles/10.1186/1746-4269-2-29",
+                ],
+            },
+            "fulltext_pdf": {
+                "value": [
+                    "http://ethnobiomed.biomedcentral.com/track/pdf/10.1186/1746-4269-2-29?site=http://ethnobiomed.biomedcentral.com",
+                ],
+            },
+            "license": {
+                "value": [
+                    "This article is published under license to BioMed Central Ltd. This is an Open Access article distributed under the terms of the Creative Commons Attribution License (http://creativecommons.org/licenses/by/2.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.",
+                ],
+            },
+            "copyright": {
+                "value": [
+                    "2006 Johnson; licensee BioMed Central Ltd.",
+                ],
+            },
         }
-        function onError(error) {
-            console.log(`Error: ${error}`)
-        }
-        const title = this.state.metadata['Title']
-        const creating = browser.tabs.create({
-            url: 'https://scholar.google.com/scholar?q=' + title,
-        })
-        creating.then(onCreated, onError)
+    }
+
+    async onCitationClick() {
+        const value = this.getValueAsJson()
+        // getCitation('Q23571040')
+        const cite = await getCitation(value, this.state.selectedCitationOption)
+        this.setState({citation: cite})
+        getCitation('10.1145/641007.641053')
+        getCitation('10.1145/641007.641053', 'citation-apa')
     }
 
     render() {
@@ -185,15 +226,15 @@ class EditMetadataModal extends React.Component {
             onClose={e => this.handleModalClose()}
             trigger={
                 <Button
-                    icon='edit'
-                    id={this.pageId}
+                    icon='quote left'
+                    id={this.pageId + 'citation'}
                     onClick={e => { e.preventDefault(); this.handleModalOpen() }}
                     floated='right'
                     tabIndex='-1'
-                    title={'Edit metadata of this page'}
+                    title={'Citation'}
                 />
             }>
-            <Header icon='edit' content='Edit metadata' />
+            <Header icon='edit' content='Citation' />
             <ModalContent scrolling>
                 <form>
                     <Input
@@ -243,29 +284,29 @@ class EditMetadataModal extends React.Component {
                         value={this.state.metadata['Keywords']}
                     />
                     <h5>Custom metadata</h5>
-                    <div id='custom-metadata-container' />
-                    <Button color='green' title={'Add new custom metadata'} onClick={e => { this.addNewMetadata() }}>
-                        <Icon name='add' /> Add
-                    </Button>
+                    <div id='custom-citation-container' />
+                    <Dropdown placeholder='Select citation style' selection options={this.citationOptions} defaultValue={this.citationOptions[0].value} onChange={this.handleCitationSelectChange} />
                 </form>
+                <pre>
+                    {this.state.citation}
+                </pre>
             </ModalContent>
             <ModalActions>
-                <Button color='blue' title={'Results will be displayed in a new tab'} onClick={e => this.openInGoogleScholar()}>
-                    <Icon name='student' /> Open in Google Scholar
-                </Button>
                 <Button color='red' negative title={'Do not save changes'} onClick={e => this.handleModalClose()}>
                     <Icon name='remove' /> Cancel
                 </Button>
-                <Button color='green' positive title={'Save changes'} onClick={e => this.handleModalClose(true)}> {/* this.props.onEditButtonClick() */ }
-                    <Icon name='checkmark' /> Save
+                <Button color='green'
+                        title={''}
+                        onClick={this.onCitationClick}
+                >
+                    <Icon name='quote left' /> Create citation
                 </Button>
             </ModalActions>
         </Modal>
     }
 }
-EditMetadataModal.propTypes = {
+
+EditCitationModal.propTypes = {
     page: PropTypes.object,
-    onEditButtonClick: PropTypes.func,
-    parentCallbackToUpdateList: PropTypes.func,
 }
-export default EditMetadataModal
+export default EditCitationModal
