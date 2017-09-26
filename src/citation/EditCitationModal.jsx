@@ -66,7 +66,7 @@ class EditCitationModal extends React.Component {
                         </GridColumn>
                         <GridColumn>
                             <Input
-                                title={`New Metadata value`}
+                                title={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
                                 placeholder={`New Metadata value`}
                                 minLength={2}
                                 required
@@ -87,7 +87,6 @@ class EditCitationModal extends React.Component {
         // Update item and store it
         metadata[identifier] = e.target.value
         this.setState({metadata: metadata})
-        // console.log(e.target)
     }
 
     handleCitationSelectChange(e, {name, value}) {
@@ -241,11 +240,9 @@ class EditCitationModal extends React.Component {
                         fluid
                         icon='search'
                         iconPosition='left'
-                        title='Edit title'
+                        title='Title'
                         placeholder='Title'
-                        minLength={2}
-                        required
-                        error={this.state.metadata['Title'] === undefined || this.state.metadata['Title'].length < 2}
+                        disabled={true}
                         value={this.state.metadata['Title']}
                         onChange={e => { this.handleInputChange(e, 'Title') }}
                     />
@@ -254,10 +251,9 @@ class EditCitationModal extends React.Component {
                         icon='world'
                         iconPosition='left'
                         placeholder='URL'
-                        title={`Edit URL`}
+                        title={`URL`}
                         type='url'
-                        minLength={5}
-                        error={(this.state.metadata['URL'] === undefined || this.state.metadata['URL'].length < 5)}
+                        disabled={true}
                         required
                         value={this.state.metadata['URL']}
                         onChange={e => { this.handleInputChange(e, 'URL') }}
@@ -266,9 +262,10 @@ class EditCitationModal extends React.Component {
                         fluid
                         icon='comment'
                         iconPosition='left'
-                        title='Edit description'
+                        title='Description'
                         placeholder={`Description`}
                         minLength={2}
+                        disabled={true}
                         value={this.state.metadata['Description']}
                         onChange={e => { this.handleInputChange(e, 'Description') }}
                     />
@@ -277,9 +274,8 @@ class EditCitationModal extends React.Component {
                         icon='tags'
                         iconPosition='left'
                         placeholder={`Keywords`}
-                        title={`Edit keywords`}
-                        minLength={2}
-                        // ref={(input) => { this.myInput = input }}
+                        title={`Keywords`}
+                        disabled={true}
                         onChange={e => { this.handleInputChange(e, 'Keywords') }}
                         value={this.state.metadata['Keywords']}
                     />
@@ -287,7 +283,7 @@ class EditCitationModal extends React.Component {
                     <div id='custom-citation-container' />
                     <Dropdown placeholder='Select citation style' selection options={this.citationOptions} defaultValue={this.citationOptions[0].value} onChange={this.handleCitationSelectChange} />
                 </form>
-                <pre>
+                <pre style={{ padding: '20px', whiteSpace: 'normal' }}>
                     {this.state.citation}
                 </pre>
             </ModalContent>
