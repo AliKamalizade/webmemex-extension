@@ -73,6 +73,9 @@ source file has been modified.
 If you are testing in Firefox through `npm run firefox`/`web-ext`, the extension should also reload
 automatically. Otherwise, manually press the reload button in the extension list.
 
+### In case of errors
+
+Refresh the application (e.g. go to chrome://extensions) in case context menu does not work.
 
 [WebExtension]: https://developer.mozilla.org/en-US/Add-ons/WebExtensions
 [browserify]: http://browserify.org
