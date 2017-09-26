@@ -95,9 +95,7 @@ async function showPage(pageId) {
         console.log(tab)
         switch (info.menuItemId) {
             case 'log-selection':
-                console.log(info.selectionText)
                 browser.storage.local.set({'selectedText': info.selectionText})
-                // browser.storage.local.remove('selectedText')
                 document.getElementById(pageId).click()
                 break
         }

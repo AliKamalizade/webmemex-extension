@@ -27,10 +27,16 @@ class EditMetadataModal extends React.Component {
     }
 
     // Add new metadata entry
-    addNewMetadata() {
+    addNewMetadata(selectedText) {
         const count = this.state.numberOfCustomMetadata + 1
         ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
         this.setState({numberOfCustomMetadata: count, customMetadata: this.customMetadata})
+        // if user has selected text and clicked context menu item: fill in selected text as value
+        if (selectedText) {
+            this.customMetadataValues[count - 1].inputRef.value = selectedText
+            browser.storage.local.remove('selectedText')
+            this.setState({numberOfCustomMetadata: count, customMetadata: this.customMetadata})
+        }
         console.log(this.customMetadata)
         console.log(this.state)
     }
@@ -79,11 +85,6 @@ class EditMetadataModal extends React.Component {
 
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
     handleModalOpen() {
-        browser.storage.local.get('selectedText').then(value => {
-            if (Object.keys(value).length > 0) {
-                console.log(value)
-            }
-        })
         this.setState({modalOpen: true})
         document.title = 'Edit metadata'
         // this.getCitation('10.1145/641007.641053')
@@ -126,6 +127,13 @@ class EditMetadataModal extends React.Component {
             }
             this.setState({metadata: defaultMetadata})
         }
+        // get selected text and add a new metadata item if not null
+        browser.storage.local.get('selectedText').then(value => {
+            if (Object.keys(value).length > 0) {
+                this.addNewMetadata(value.selectedText)
+                console.log(value)
+            }
+        })
     }
 
     // Close modal, revert title and save edits in extension storage
@@ -141,10 +149,11 @@ class EditMetadataModal extends React.Component {
             browser.storage.local.set({[this.pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
             console.log(browser.storage.local.get(null))
             // console.log(browser.storage.local.getBytesInUse())
-            this.props.parentCallbackToUpdateList(this.state.metadata, this.pageId)
+            if (this.props.parentCallbackToUpdateList) {
+                this.props.parentCallbackToUpdateList(this.state.metadata, this.pageId)
+            }
         }
         // console.log(this.state)
-        browser.storage.local.remove('selectedText')
     }
 
     openInGoogleScholar () {
