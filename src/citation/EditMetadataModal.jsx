@@ -58,6 +58,7 @@ class EditMetadataModal extends React.Component {
                                 defaultValue={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
                                 minLength={2}
                                 required
+                                fluid
                                 ref={(input) => { this.customMetadata[i] = input }}
                                 // onChange={this.handleChange}
                                 // error={this.customMetadata[i] === undefined || this.customMetadata[i].inputRef.value.length === 0}
@@ -69,6 +70,7 @@ class EditMetadataModal extends React.Component {
                                 placeholder={`New Metadata value`}
                                 minLength={2}
                                 required
+                                fluid
                                 defaultValue={this.customMetadataValues[i]? this.customMetadataValues[i].inputRef.value : null}
                                 ref={(input) => { this.customMetadataValues[i] = input }}
                             />
@@ -77,7 +79,7 @@ class EditMetadataModal extends React.Component {
                 </Grid>
             </li>
         )
-        return <ul style={{ listStyle: 'none' }}>{result}</ul>
+        return <ul style={{ listStyle: 'none', paddingLeft: 0 }}>{result}</ul>
     }
 
     // handleChange(param) {

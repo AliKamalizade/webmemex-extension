@@ -50,35 +50,24 @@ class EditCitationModal extends React.Component {
     getCustomMetadataList() {
         const result = [...new Array(this.state.numberOfCustomMetadata)].map((el, i) =>
             <li key={i}>
-                <Grid columns={2}>
-                    <GridRow>
-                        <GridColumn>
-                            <Input
-                                title={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
-                                placeholder={`New Metadata name`}
-                                defaultValue={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
-                                minLength={2}
-                                required
-                                ref={(input) => { this.customMetadata[i] = input }}
-                                // onChange={this.handleChange}
-                                // error={this.customMetadata[i] === undefined || this.customMetadata[i].inputRef.value.length === 0}
-                            />
-                        </GridColumn>
-                        <GridColumn>
-                            <Input
-                                title={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
-                                placeholder={`New Metadata value`}
-                                minLength={2}
-                                required
-                                defaultValue={this.customMetadataValues[i]? this.customMetadataValues[i].inputRef.value : null}
-                                ref={(input) => { this.customMetadataValues[i] = input }}
-                            />
-                        </GridColumn>
-                    </GridRow>
-                </Grid>
+                <Input
+                    style={{ display: 'none' }}
+                    title={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
+                    placeholder={`New Metadata name`}
+                    defaultValue={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
+                    ref={(input) => { this.customMetadata[i] = input }}
+                />
+                <Input
+                    title={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
+                    placeholder={`New Metadata value`}
+                    fluid
+                    disabled
+                    defaultValue={this.customMetadataValues[i]? this.customMetadataValues[i].inputRef.value : null}
+                    ref={(input) => { this.customMetadataValues[i] = input }}
+                />
             </li>
         )
-        return <ul style={{ listStyle: 'none' }}>{result}</ul>
+        return <ul style={{ listStyle: 'none', paddingLeft: 0 }}>{result}</ul>
     }
 
     // Called when an input is modified
@@ -242,7 +231,7 @@ class EditCitationModal extends React.Component {
                         iconPosition='left'
                         title='Title'
                         placeholder='Title'
-                        disabled={true}
+                        disabled
                         value={this.state.metadata['Title']}
                         onChange={e => { this.handleInputChange(e, 'Title') }}
                     />
@@ -253,7 +242,7 @@ class EditCitationModal extends React.Component {
                         placeholder='URL'
                         title={`URL`}
                         type='url'
-                        disabled={true}
+                        disabled
                         required
                         value={this.state.metadata['URL']}
                         onChange={e => { this.handleInputChange(e, 'URL') }}
@@ -265,7 +254,7 @@ class EditCitationModal extends React.Component {
                         title='Description'
                         placeholder={`Description`}
                         minLength={2}
-                        disabled={true}
+                        disabled
                         value={this.state.metadata['Description']}
                         onChange={e => { this.handleInputChange(e, 'Description') }}
                     />
@@ -275,7 +264,7 @@ class EditCitationModal extends React.Component {
                         iconPosition='left'
                         placeholder={`Keywords`}
                         title={`Keywords`}
-                        disabled={true}
+                        disabled
                         onChange={e => { this.handleInputChange(e, 'Keywords') }}
                         value={this.state.metadata['Keywords']}
                     />
