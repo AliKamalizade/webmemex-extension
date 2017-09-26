@@ -2,7 +2,6 @@ import React from 'react'
 import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Grid, GridColumn, GridRow } from 'semantic-ui-react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
-import styles from './EditMetadataModel.css'
 
 // A dialog which contains stored metadata. New metadata can be added.
 class EditMetadataModal extends React.Component {
@@ -17,6 +16,7 @@ class EditMetadataModal extends React.Component {
         this.customMetadataValues = {}
         this.defaultMetadata = {}
         this.pageId = this.props.page._id
+        // this.handleChange = this.handleChange.bind(this)
     }
 
     // Reinsert custom metadata when shown again
@@ -56,13 +56,19 @@ class EditMetadataModal extends React.Component {
                                 title={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
                                 placeholder={`New Metadata name`}
                                 defaultValue={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
+                                minLength={2}
+                                required
                                 ref={(input) => { this.customMetadata[i] = input }}
+                                // onChange={this.handleChange}
+                                // error={this.customMetadata[i] === undefined || this.customMetadata[i].inputRef.value.length === 0}
                             />
                         </GridColumn>
                         <GridColumn>
                             <Input
                                 title={`New Metadata value`}
                                 placeholder={`New Metadata value`}
+                                minLength={2}
+                                required
                                 defaultValue={this.customMetadataValues[i]? this.customMetadataValues[i].inputRef.value : null}
                                 ref={(input) => { this.customMetadataValues[i] = input }}
                             />
@@ -71,10 +77,14 @@ class EditMetadataModal extends React.Component {
                 </Grid>
             </li>
         )
-        return <ul className={styles.cleanerListStyle}>{result}</ul>
+        return <ul style={{ listStyle: 'none' }}>{result}</ul>
     }
 
-    // Called when an input is
+    // handleChange(param) {
+    //     console.log(param)
+    // }
+
+    // Called when an input is modified
     handleInputChange(e, identifier) {
         const metadata = this.state.metadata
         // Update item and store it
@@ -131,7 +141,6 @@ class EditMetadataModal extends React.Component {
         browser.storage.local.get('selectedText').then(value => {
             if (Object.keys(value).length > 0) {
                 this.addNewMetadata(value.selectedText)
-                console.log(value)
             }
         })
     }
@@ -187,13 +196,16 @@ class EditMetadataModal extends React.Component {
             }>
             <Header icon='edit' content='Edit metadata' />
             <ModalContent scrolling>
-                <div>
+                <form>
                     <Input
                         fluid
                         icon='search'
                         iconPosition='left'
                         title='Edit title'
                         placeholder='Title'
+                        minLength={2}
+                        required
+                        error={this.state.metadata['Title'] === undefined || this.state.metadata['Title'].length < 2}
                         value={this.state.metadata['Title']}
                         onChange={e => { this.handleInputChange(e, 'Title') }}
                     />
@@ -204,6 +216,9 @@ class EditMetadataModal extends React.Component {
                         placeholder='URL'
                         title={`Edit URL`}
                         type='url'
+                        minLength={5}
+                        error={(this.state.metadata['URL'] === undefined || this.state.metadata['URL'].length < 5)}
+                        required
                         value={this.state.metadata['URL']}
                         onChange={e => { this.handleInputChange(e, 'URL') }}
                     />
@@ -213,6 +228,7 @@ class EditMetadataModal extends React.Component {
                         iconPosition='left'
                         title='Edit description'
                         placeholder={`Description`}
+                        minLength={2}
                         value={this.state.metadata['Description']}
                         onChange={e => { this.handleInputChange(e, 'Description') }}
                     />
@@ -222,6 +238,7 @@ class EditMetadataModal extends React.Component {
                         iconPosition='left'
                         placeholder={`Keywords`}
                         title={`Edit keywords`}
+                        minLength={2}
                         // ref={(input) => { this.myInput = input }}
                         onChange={e => { this.handleInputChange(e, 'Keywords') }}
                         value={this.state.metadata['Keywords']}
@@ -231,7 +248,7 @@ class EditMetadataModal extends React.Component {
                     <Button color='green' title={'Add new custom metadata'} onClick={e => { this.addNewMetadata() }}>
                         <Icon name='add' /> Add
                     </Button>
-                </div>
+                </form>
             </ModalContent>
             <ModalActions>
                 <Button color='blue' title={'Results will be displayed in a new tab'} onClick={e => this.openInGoogleScholar()}>
