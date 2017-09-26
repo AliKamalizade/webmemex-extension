@@ -129,19 +129,19 @@ class EditCitationModal extends React.Component {
 
     getValueAsJson() {
         const type = this.state.selectedBibTexOption
-        const generalName = 'Steinbeck2003'
-        const author = 'Steinbeck, Christoph and Han, Yongquan and Kuhn, Stefan and Horlacher, Oliver and Luttmann, Edgar and Willighagen, Egon'
-        const year = 2003
-        const title = '{{' + 'The Chemistry Development Kit (CDK): an open-source Java library for Chemo- and Bioinformatics.' + '}}'
-        const journal = 'Journal of chemical information and computer sciences'
-        const volume = 43
-        const number = 2
-        const pages = '493--500'
-        const doi = '10.1021/ci025584y'
-        const isbn = '2214707786'
-        const issn = '0095-2338'
-        const pmid = '12653513'
-        const url = 'http://www.ncbi.nlm.nih.gov/pubmed/12653513'
+        const generalName = `Steinbeck2003`
+        const author = `Steinbeck, Christoph and Han, Yongquan and Kuhn, Stefan and Horlacher, Oliver and Luttmann, Edgar and Willighagen, Egon`
+        const year = `2003`
+        const title = `{{The Chemistry Development Kit (CDK): an open-source Java library for Chemo- and Bioinformatics.}}`
+        const journal = `Journal of chemical information and computer sciences`
+        const volume = `43`
+        const number = `2`
+        const pages = `493--500`
+        const doi = `10.1021/ci025584y`
+        const isbn = `2214707786`
+        const issn = `0095-2338`
+        const pmid = `12653513`
+        const url = `http://www.ncbi.nlm.nih.gov/pubmed/12653513`
         return `@${type}{${generalName}, author = {${author}},year = {${year}},title = ${title},journal = {${journal}},volume = {${volume}},number = {${number}},pages = {${pages}},doi = {${doi}},isbn = {${isbn}},issn = {${issn}},pmid = {${pmid}},url = {${url}}}`
     }
 
