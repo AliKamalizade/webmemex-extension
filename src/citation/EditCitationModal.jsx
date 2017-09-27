@@ -172,7 +172,7 @@ class EditCitationModal extends React.Component {
                     title={'Citation'}
                 />
             }>
-            <Header icon='edit' content='Citation' />
+            <Header icon='quote left' content='Citation' />
             <ModalContent scrolling>
                 <form>
                     <Input

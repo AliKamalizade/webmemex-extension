@@ -39,7 +39,6 @@ class Overview extends React.Component {
     }
 
     render() {
-        console.log(this.savedPages)
         return (
             <div>
                 <div
@@ -62,7 +61,7 @@ class Overview extends React.Component {
                         date={this.props.endDate}
                         onDateChange={this.props.onEndDateChange}
                     />
-                    {/*<StorageStatisticsModal page={}/>*/}
+                    <StorageStatisticsModal customMetadata={this.savedPages}/>
                 </div>
                 <div>
                     <ResultList
