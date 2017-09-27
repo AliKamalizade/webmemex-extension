@@ -25,7 +25,7 @@ class StorageStatisticsModal extends React.Component {
             for (const key of Object.keys(this.props.customMetadata)) {
                 if (key.indexOf('page/') !== -1) {
                     let obj = this.props.customMetadata[key].defaultMetadata
-                    try{
+                    try {
                         Object.keys(obj).forEach((defaultMetadataKey) => {
                             list.push([obj[defaultMetadataKey].slice(0, 50), 12])
                         })
@@ -33,7 +33,7 @@ class StorageStatisticsModal extends React.Component {
                         console.log(e)
                     }
                     obj = this.props.customMetadata[key].customMetadata
-                    try{
+                    try {
                         Object.keys(obj).forEach((customMetadataKey) => {
                             list.push([obj[customMetadataKey].slice(0, 50), 12])
                         })
@@ -44,10 +44,29 @@ class StorageStatisticsModal extends React.Component {
             }
             // ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
             try {
-                WordCloud(document.getElementById('storage-statistics'), {list: list, drawOutOfBound: true, gridSize: 16, weightFactor: 1.5})
+                WordCloud(document.getElementById('storage-statistics'), {list: list, drawOutOfBound: true, gridSize: 16, weightFactor: 1.2})
             } catch (e) {
                 console.log(e)
             }
+        }
+    }
+
+    // Function to download metadata as a .txt file
+    exportAsFile() {
+        try {
+            const file = new Blob([JSON.stringify(this.props.customMetadata, null)], {type: 'text/plain'})
+            const a = document.createElement('a')
+            const url = URL.createObjectURL(file)
+            a.href = url
+            a.download = 'WebMemex-Export-Metadata.txt'
+            document.body.appendChild(a)
+            a.click()
+            setTimeout(function () {
+                document.body.removeChild(a)
+                window.URL.revokeObjectURL(url)
+            }, 0)
+        } catch (e) {
+            console.log(e)
         }
     }
 
@@ -64,7 +83,7 @@ class StorageStatisticsModal extends React.Component {
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
     handleModalOpen() {
         this.setState({modalOpen: true})
-        document.title = 'Storage statistics'
+        document.title = 'Custom metadata statistics'
     }
 
     // Close modal, revert title and save edits in extension storage
@@ -86,10 +105,10 @@ class StorageStatisticsModal extends React.Component {
                     onClick={e => { e.preventDefault(); this.handleModalOpen() }}
                     floated='right'
                     tabIndex='-1'
-                    title={'Show statistics'}
+                    title={'Show custom metadata statistics'}
                 />
             }>
-            <Header icon='bar graph' content='Storage statistics' />
+            <Header icon='bar graph' content='Custom metadata statistics' />
             <ModalContent scrolling>
                 <div id={'storage-statistics'} style={{ padding: '20px', minHeight: '600px' }} />
             </ModalContent>
@@ -97,7 +116,7 @@ class StorageStatisticsModal extends React.Component {
                 <Button color='red' negative onClick={e => this.handleModalClose()}>
                     <Icon name='remove' /> Close
                 </Button>
-                <Button color='green' title={''}>
+                <Button color='green' title={'Save metadata as a .txt file'} onClick={e => this.exportAsFile()}>
                     <Icon name='bar graph' /> Export metadata
                 </Button>
             </ModalActions>
