@@ -130,7 +130,7 @@ class EditCitationModal extends React.Component {
         document.title = this.pageTitle
     }
 
-    getValueAsJson() {
+    getConstructedInput() {
         const type = this.state.selectedBibTexOption
         const generalName = `Steinbeck2003`
         const author = `Steinbeck, Christoph and Han, Yongquan and Kuhn, Stefan and Horlacher, Oliver and Luttmann, Edgar and Willighagen, Egon`
@@ -153,7 +153,7 @@ class EditCitationModal extends React.Component {
         console.log(this.defaultMetadata)
         console.log(this.customMetadata)
         console.log(this.customMetadataValues)
-        const value = this.getValueAsJson()
+        const value = this.getConstructedInput()
         // getCitation('Q23571040')
         const cite = await getCitation(value, this.state.selectedCitationOption)
         this.setState({citation: cite})
@@ -241,7 +241,7 @@ class EditCitationModal extends React.Component {
                     <Icon name='remove' /> Close
                 </Button>
                 <Button color='green'
-                    title={''}
+                    title={'The result will be shown above'}
                     onClick={this.onCitationClick}
                 >
                     <Icon name='quote left' /> Create citation
