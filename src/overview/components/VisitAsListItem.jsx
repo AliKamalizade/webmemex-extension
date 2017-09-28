@@ -10,11 +10,11 @@ import niceTime from 'src/util/nice-time'
 
 import ImgFromPouch from './ImgFromPouch'
 import styles from './VisitAsListItem.css'
-import {deleteVisit, editVisit} from '../actions'
+import {deleteVisit} from '../actions'
 import EditMetadataModal from "../../citation/EditMetadataModal"
 import EditCitationModal from "../../citation/EditCitationModal"
 
-const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, savedMetadata, parentCallbackToUpdateList}) => {
+const VisitAsListItem = ({doc, compact, onTrashButtonClick, savedMetadata, parentCallbackToUpdateList}) => {
     const href = hrefForLocalPage({page: doc.page})
 
     const pageSize = get(['_attachments', 'frozen-page.html', 'length'])(doc.page)
@@ -31,7 +31,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, s
     const hasFavIcon = !!(doc.page._attachments && doc.page._attachments.favIcon)
     const actionsContainer = (
         <div>
-            <EditMetadataModal page={doc.page} onEditButtonClick={onEditButtonClick} parentCallbackToUpdateList={update} />
+            <EditMetadataModal page={doc.page} parentCallbackToUpdateList={update} />
             <EditCitationModal page={doc.page} />
             <Popup
                 trigger={
@@ -78,7 +78,7 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick, onEditButtonClick, s
             className={visitClasses}
             // DEBUG Show document props on ctrl+meta+click
             onClick={e => { if (e.metaKey && e.ctrlKey) { console.log(doc); e.preventDefault() } }}
-            onKeyPress={e => { if (e.key==='Delete') { onTrashButtonClick() } else if (e.key==='Edit') { onEditButtonClick() } }}
+            onKeyPress={e => { if (e.key==='Delete') { onTrashButtonClick() } }}
         >
             <div className={styles.screenshotContainer}>
                 {doc.page._attachments && doc.page._attachments.screenshot
@@ -128,7 +128,6 @@ VisitAsListItem.propTypes = {
     doc: PropTypes.object.isRequired,
     compact: PropTypes.bool,
     onTrashButtonClick: PropTypes.func,
-    onEditButtonClick: PropTypes.func,
     savedMetadata: PropTypes.object,
     parentCallbackToUpdateList: PropTypes.func,
 }
@@ -138,10 +137,6 @@ const mapStateToProps = state => ({})
 
 const mapDispatchToProps = (dispatch, {doc}) => ({
     onTrashButtonClick: () => dispatch(deleteVisit({visitId: doc._id})),
-    onEditButtonClick: () => {
-        console.log(doc)
-        return dispatch(editVisit({visitId: doc._id}))
-    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(VisitAsListItem)

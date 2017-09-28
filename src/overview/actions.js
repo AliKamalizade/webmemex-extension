@@ -37,13 +37,6 @@ export function deleteVisit({visitId}) {
     }
 }
 
-export function editVisit({visitId}) {
-    console.log(visitId)
-    return async function (dispatch, getState) {
-        classify({visitId: 42})
-    }
-}
-
 export const newSearch = asyncActionCreator(() => async (dispatch, getState) => {
     const { currentQueryParams } = ourState(getState())
     const searchResult = await filterVisitsByQuery({

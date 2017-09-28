@@ -13,11 +13,10 @@ class EditMetadataModal extends React.Component {
         this.handleModalClose = this.handleModalClose.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
         this.deleteRow = this.deleteRow.bind(this)
-        this.customMetadata = {} // contains references to custom metadata input fields
-        this.customMetadataValues = {}
+        this.customMetadata = {} // contains references to custom metadata label input fields
+        this.customMetadataValues = {} // contains references to custom metadata value input fields
         this.defaultMetadata = {}
         this.pageId = this.props.page._id
-        // this.handleChange = this.handleChange.bind(this)
     }
 
     // Reinsert custom metadata when shown again
@@ -38,13 +37,25 @@ class EditMetadataModal extends React.Component {
             browser.storage.local.remove('selectedText')
             this.setState({numberOfCustomMetadata: count, customMetadata: this.customMetadata})
         }
-        console.log(this.customMetadata)
-        console.log(this.state)
+        // console.log(this.customMetadata)
+        // console.log(this.state)
     }
 
     // delete a metadata row
     deleteRow(param) {
-        console.log(param)
+        Object.keys(this.customMetadata).forEach((defaultMetadataKey) => {
+            if (this.customMetadata[defaultMetadataKey] === param.label) {
+                delete this.customMetadata['' + defaultMetadataKey + '']
+            }
+        })
+        Object.keys(this.customMetadataValues).forEach((defaultMetadataValue) => {
+            if (this.customMetadataValues[defaultMetadataValue] === param.value) {
+                delete this.customMetadataValues['' + defaultMetadataValue + '']
+            }
+        })
+        this.setState({numberOfCustomMetadata: this.state.numberOfCustomMetadata - 1, customMetadata: this.customMetadata}, () => {
+            ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
+        })
     }
 
     getCustomMetadataContainerDom() {
@@ -66,8 +77,6 @@ class EditMetadataModal extends React.Component {
                                 required
                                 fluid
                                 ref={(input) => { this.customMetadata[i] = input }}
-                                // onChange={this.handleChange}
-                                // error={this.customMetadata[i] === undefined || this.customMetadata[i].inputRef.value.length === 0}
                             />
                         </GridColumn>
                         <GridColumn>
@@ -92,10 +101,6 @@ class EditMetadataModal extends React.Component {
         )
         return <ul style={{ listStyle: 'none', paddingLeft: 0 }}>{result}</ul>
     }
-
-    // handleChange(param) {
-    //     console.log(param)
-    // }
 
     // Called when an input is modified
     handleInputChange(e, identifier) {
@@ -144,7 +149,7 @@ class EditMetadataModal extends React.Component {
                     }
                     console.log(this.customMetadata)
                     // console.log(savedPage[this.pageId])
-                    if(savedPage[this.pageId]) {
+                    if (savedPage[this.pageId]) {
                         this.setState({customMetadata: savedPage[this.pageId].customMetadata})
                     }
                 })
@@ -167,7 +172,10 @@ class EditMetadataModal extends React.Component {
             const customMetadataToStore = {}
             const numberOfCustomMetadata = Object.keys(this.customMetadata).length
             for (let i = 0; i < numberOfCustomMetadata; i++) {
-                customMetadataToStore[this.customMetadata[i].inputRef.value] = (this.customMetadataValues[i].inputRef.value)
+                // null if this entry was deleted by the user
+                if (this.customMetadata[i] !== null) {
+                    customMetadataToStore[this.customMetadata[i].inputRef.value] = (this.customMetadataValues[i].inputRef.value)
+                }
             }
             browser.storage.local.set({[this.pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
             console.log(browser.storage.local.get(null))
@@ -253,7 +261,6 @@ class EditMetadataModal extends React.Component {
                         placeholder={`Keywords`}
                         title={`Edit keywords`}
                         minLength={2}
-                        // ref={(input) => { this.myInput = input }}
                         onChange={e => { this.handleInputChange(e, 'Keywords') }}
                         value={this.state.metadata['Keywords']}
                     />
@@ -280,7 +287,6 @@ class EditMetadataModal extends React.Component {
 }
 EditMetadataModal.propTypes = {
     page: PropTypes.object,
-    onEditButtonClick: PropTypes.func,
     parentCallbackToUpdateList: PropTypes.func,
 }
 export default EditMetadataModal
