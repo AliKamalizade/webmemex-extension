@@ -26,7 +26,7 @@ class EditMetadataModal extends React.Component {
         }
     }
 
-    // Add new metadata entry
+    // Add a new metadata entry
     addNewMetadata(selectedText) {
         const count = this.state.numberOfCustomMetadata + 1
         ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
@@ -41,16 +41,16 @@ class EditMetadataModal extends React.Component {
         // console.log(this.state)
     }
 
-    // delete a metadata row
+    // delete a metadata row. param contains a label reference and a value reference
     deleteRow(param) {
         Object.keys(this.customMetadata).forEach((defaultMetadataKey) => {
             if (this.customMetadata[defaultMetadataKey] === param.label) {
-                delete this.customMetadata['' + defaultMetadataKey + '']
+                delete this.customMetadata[`${defaultMetadataKey}`]
             }
         })
         Object.keys(this.customMetadataValues).forEach((defaultMetadataValue) => {
             if (this.customMetadataValues[defaultMetadataValue] === param.value) {
-                delete this.customMetadataValues['' + defaultMetadataValue + '']
+                delete this.customMetadataValues[`${defaultMetadataValue}`]
             }
         })
         this.setState({numberOfCustomMetadata: this.state.numberOfCustomMetadata - 1, customMetadata: this.customMetadata}, () => {
@@ -91,7 +91,7 @@ class EditMetadataModal extends React.Component {
                             />
                         </GridColumn>
                         <GridColumn>
-                            <Button color='red' negative title={'Remove this row'} type={'button'} onClick={e => this.deleteRow({label: this.customMetadata[i], value: this.customMetadataValues[i]})}>
+                            <Button color='red' negative title={'Remove this metadata'} type={'button'} onClick={e => this.deleteRow({label: this.customMetadata[i], value: this.customMetadataValues[i]})}>
                                 <Icon name='delete' /> Remove
                             </Button>
                         </GridColumn>
@@ -278,7 +278,7 @@ class EditMetadataModal extends React.Component {
                 <Button color='red' negative title={'Do not save changes'} onClick={e => this.handleModalClose()}>
                     <Icon name='remove' /> Cancel
                 </Button>
-                <Button color='green' positive title={'Save changes'} onClick={e => this.handleModalClose(true)}> {/* this.props.onEditButtonClick() */ }
+                <Button color='green' positive title={'Save changes. Otherwise, all changes are reverted on reload'} onClick={e => this.handleModalClose(true)}> {/* this.props.onEditButtonClick() */ }
                     <Icon name='checkmark' /> Save
                 </Button>
             </ModalActions>

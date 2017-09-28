@@ -3,6 +3,7 @@ import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Dropdow
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import {getBibTexTypes, getCitation, getCitationStyles, getInputOptions} from "./citation"
+import CopyToClipboard from "react-copy-to-clipboard"
 
 // A dialog for citations
 class EditCitationModal extends React.Component {
@@ -99,7 +100,7 @@ class EditCitationModal extends React.Component {
                             defaultMetadata[key] = savedPage[this.pageId].defaultMetadata[key]
                         }
                         this.setState({metadata: defaultMetadata})
-                        console.log(this.state)
+                        // console.log(this.state)
                         // Insert custom metadata from storage
                         const storedCustomMetadata = Object.keys(savedPage[this.pageId].customMetadata)
                         const numberOfCustomMetadata = storedCustomMetadata.length
@@ -112,7 +113,7 @@ class EditCitationModal extends React.Component {
                             this.customMetadataValues[i].inputRef.value = value
                         }
                     }
-                    console.log(this.customMetadata)
+                    // console.log(this.customMetadata)
                     // console.log(savedPage[this.pageId])
                     this.setState({customMetadata: savedPage[this.pageId].customMetadata})
                 })
@@ -154,7 +155,7 @@ class EditCitationModal extends React.Component {
         // getCitation('Q23571040')
         const cite = await getCitation(value, this.state.selectedCitationOption)
         this.setState({citation: cite})
-        getCitation('10.1145/641007.641053')
+        // getCitation('10.1145/641007.641053')
     }
 
     render() {
@@ -226,6 +227,11 @@ class EditCitationModal extends React.Component {
                 </form>
                 <pre style={{ padding: '20px', whiteSpace: 'normal', border: '1px solid rgba(0,0,0,.15)' }}>
                     {this.state.citation}
+                    <CopyToClipboard text={this.state.citation}>
+                        <Button title={'Copy to clipboard'} style={{ display: this.state.citation? 'block' : 'none' }} color='blue'>
+                            <Icon name='clipboard' /> Copy to clipboard
+                        </Button>
+                    </CopyToClipboard>
                 </pre>
             </ModalContent>
             <ModalActions>
@@ -233,8 +239,8 @@ class EditCitationModal extends React.Component {
                     <Icon name='remove' /> Close
                 </Button>
                 <Button color='green'
-                        title={''}
-                        onClick={this.onCitationClick}
+                    title={''}
+                    onClick={this.onCitationClick}
                 >
                     <Icon name='quote left' /> Create citation
                 </Button>
