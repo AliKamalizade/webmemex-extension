@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Icon, Modal, Input, Header, ModalContent, ModalActions, Dropdown } from 'semantic-ui-react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
-import {getBibTexTypes, getCitation, getCitationStyles, getInputOptions} from "./citation"
+import {getBibTexTypes, createCitation, getCitationStyles, getInputOptions} from "./citation"
 import CopyToClipboard from "react-copy-to-clipboard"
 
 // A dialog for citations
@@ -155,7 +155,7 @@ class EditCitationModal extends React.Component {
         console.log(this.customMetadataValues)
         const value = this.getConstructedInput()
         // getCitation('Q23571040')
-        const cite = await getCitation(value, this.state.selectedCitationOption)
+        const cite = await createCitation(value, this.state.selectedCitationOption)
         this.setState({citation: cite})
         // getCitation('10.1145/641007.641053')
     }

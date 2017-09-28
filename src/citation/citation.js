@@ -6,7 +6,7 @@ import Cite from "citation-js"
  * @param style {string}
  * @param lang {string}
  */
-export async function getCitation(input, style='citation-harvard1', lang = 'en-US') {
+export async function createCitation(input, style='citation-apa', lang = 'en-US') {
     const data = await Cite.async(input)
     const result = await data.get({
         format: 'string',
