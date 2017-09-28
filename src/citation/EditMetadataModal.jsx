@@ -134,7 +134,6 @@ class EditMetadataModal extends React.Component {
                             defaultMetadata[key] = savedPage[this.pageId].defaultMetadata[key]
                         }
                         this.setState({metadata: defaultMetadata})
-                        // console.log(this.state)
                         // Insert custom metadata from storage
                         const storedCustomMetadata = Object.keys(savedPage[this.pageId].customMetadata)
                         const numberOfCustomMetadata = storedCustomMetadata.length
@@ -147,8 +146,6 @@ class EditMetadataModal extends React.Component {
                             this.customMetadataValues[i].inputRef.value = value
                         }
                     }
-                    // console.log(this.customMetadata)
-                    // console.log(savedPage[this.pageId])
                     if (savedPage[this.pageId]) {
                         this.setState({customMetadata: savedPage[this.pageId].customMetadata})
                     }
@@ -169,6 +166,7 @@ class EditMetadataModal extends React.Component {
         this.setState({modalOpen: false})
         document.title = this.pageTitle
         if (performSave) {
+            // create an object which contains all custom metadata
             const customMetadataToStore = {}
             const numberOfCustomMetadata = Object.keys(this.customMetadata).length
             for (let i = 0; i < numberOfCustomMetadata; i++) {

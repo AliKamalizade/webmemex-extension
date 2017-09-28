@@ -7,7 +7,6 @@ import { deleteVisitAndPage } from 'src/page-storage/deletion'
 import asyncActionCreator from 'src/util/redux-async-action-creator'
 
 import { ourState } from './selectors'
-import {classify} from "../citation/classification"
 
 
 // == Simple commands to change the state in reducers ==

@@ -131,7 +131,7 @@ class EditCitationModal extends React.Component {
     getConstructedInput() {
         // remove spaces before and after to avoid errors
         const publicationType = this.state.publicationType.replace(/ /g, '')
-        if( publicationType.length < 1) {
+        if (publicationType.length < 1) {
             return ''
         }
         const type = this.state.selectedBibTexOption
@@ -139,24 +139,18 @@ class EditCitationModal extends React.Component {
         const length = Object.keys(this.customMetadata).length
         for (let i = 0; i < length; i++) {
             value += this.customMetadata[`${i}`].props.defaultValue + ' = {' + this.customMetadataValues[`${i}`].props.defaultValue + '},'
-            // close the file
-            if ((length - 1) === i){
+            // Finally, append title and close it
+            if ((length - 1) === i) {
                 value += 'Title = {' + this.state.metadata.Title + '}}'
             }
         }
-        console.log(value)
         return value
     }
 
     async onCitationClick() {
-        console.log(this.state)
-        // console.log(this.customMetadata)
-        // console.log(this.customMetadataValues)
         const value = this.getConstructedInput()
-        // getCitation('Q23571040')
         const cite = await createCitation(value, this.state.selectedCitationOption)
         this.setState({citation: cite})
-        // getCitation('10.1145/641007.641053')
     }
 
     render() {
