@@ -24,15 +24,23 @@ export async function createCitation(input, style='citation-apa', lang = 'en-US'
 export function getCitationStyles() {
     return [
         {
-            text: 'APA',
+            text: 'APA citation style',
             value: 'citation-apa',
         },
         {
-            text: 'Harvard',
+            text: 'BibTex style',
+            value: 'bibtex',
+        },
+        {
+            text: 'Bib.TXT style',
+            value: 'bibtxt',
+        },
+        {
+            text: 'Harvard citation style',
             value: 'citation-harvard1',
         },
         {
-            text: 'Vancouver',
+            text: 'Vancouver citation style',
             value: 'citation-vancouver',
         },
     ]
@@ -103,7 +111,7 @@ export function getInputOptions() {
     return [
         {
             text: 'BibTex',
-            value: 'BibText',
+            value: 'BibTex',
         },
         {
             text: 'DOI',

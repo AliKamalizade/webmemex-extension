@@ -23,7 +23,7 @@ class EditCitationModal extends React.Component {
         this.handleCitationSelectChange = this.handleCitationSelectChange.bind(this)
         this.onCitationClick = this.onCitationClick.bind(this)
         this.handleBibTexSelectChange = this.handleBibTexSelectChange.bind(this)
-        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0, customMetadata: {}, citation: null, selectedCitationOption: this.citationOptions[0].value, selectedBibTexOption: this.bibTexTypes[0].value, publicationType: '' }
+        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0, customMetadata: {}, citation: null, selectedCitationOption: this.citationOptions[0].value, selectedBibTexOption: this.bibTexTypes[0].value }
     }
 
     // Reinsert custom metadata when shown again
@@ -80,7 +80,7 @@ class EditCitationModal extends React.Component {
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
     handleModalOpen() {
         this.setState({modalOpen: true})
-        document.title = 'Citation'
+        document.title = 'Create citation'
         if (Object.keys(this.state.metadata).length === 0) {
             // Insert default metadata from page object
             const defaultMetadata = {}
@@ -129,21 +129,18 @@ class EditCitationModal extends React.Component {
 
     // Constructs an object which should be used to generate a citation
     getConstructedInput() {
-        // remove spaces before and after to avoid errors
-        const publicationType = this.state.publicationType.replace(/ /g, '')
-        if (publicationType.length < 1) {
-            return ''
-        }
         const type = this.state.selectedBibTexOption
-        let value = '@' + type + '{' + publicationType + ','
+        let value = '@' + type + '{ ,'
         const length = Object.keys(this.customMetadata).length
         for (let i = 0; i < length; i++) {
             value += this.customMetadata[`${i}`].props.defaultValue + ' = {' + this.customMetadataValues[`${i}`].props.defaultValue + '},'
             // Finally, append title and close it
             if ((length - 1) === i) {
-                value += 'Title = {' + this.state.metadata.Title + '}}'
+                value += 'title = {' + this.state.metadata.Title + '},'
+                value += 'url = {' + this.state.metadata.URL + '}}'
             }
         }
+        console.log(value)
         return value
     }
 
@@ -165,10 +162,10 @@ class EditCitationModal extends React.Component {
                     onClick={e => { e.preventDefault(); this.handleModalOpen() }}
                     floated='right'
                     tabIndex='-1'
-                    title={'Citation'}
+                    title={'Create citation'}
                 />
             }>
-            <Header icon='quote left' content='Citation' />
+            <Header icon='quote left' content='Create citation' />
             <ModalContent scrolling>
                 <form>
                     <Input
@@ -216,20 +213,8 @@ class EditCitationModal extends React.Component {
                     />
                     <h5>Custom metadata</h5>
                     <div id='custom-citation-container' />
-                    <Input
-                        fluid
-                        icon='id badge'
-                        iconPosition='left'
-                        placeholder={`Publication type is required for BibTex`}
-                        title={`Publication type`}
-                        required
-                        minLength={1}
-                        error={this.state.publicationType.length < 1}
-                        onChange={e => { this.setState({publicationType: e.target.value}) }}
-                        value={this.state.publicationType}
-                    />
-                    <Dropdown placeholder='Select citation style' title={'Select citation style'} selection options={this.citationOptions} onChange={this.handleCitationSelectChange} />
-                    <Dropdown placeholder='Select input' selection disabled defaultValue={this.inputOptions[0].value} options={this.inputOptions} />
+                    <Dropdown placeholder='Select output format' title={'Select output format'} selection options={this.citationOptions} onChange={this.handleCitationSelectChange} />
+                    <Dropdown placeholder='Select input fornat' title={'Select input format'} selection disabled defaultValue={this.inputOptions[0].value} options={this.inputOptions} />
                     <Dropdown placeholder='Select BibTex reference type' title={'Select BibTex reference type'} selection options={this.bibTexTypes} onChange={this.handleBibTexSelectChange} />
                 </form>
                 <pre style={{ padding: '20px', whiteSpace: 'normal', border: '1px solid rgba(0,0,0,.15)' }}>
