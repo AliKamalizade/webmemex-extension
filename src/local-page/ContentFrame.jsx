@@ -39,13 +39,7 @@ export default class ContentFrame extends React.Component {
 
         // Keep the iframe's location #hash in sync with that of the window.
         syncLocationHashes([window, iframe.contentWindow], {initial: window})
-
-        const updating = browser.contextMenus.update('log-selection', {
-            // title: 'tore selected text with WebMemex',
-            // documentUrlPatterns: ['about:srcdoc'],
-        })
     }
-
     render() {
         return (
             <iframe

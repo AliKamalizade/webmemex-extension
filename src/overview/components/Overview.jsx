@@ -9,7 +9,7 @@ import { ourState } from '../selectors'
 import ResultList from './ResultList'
 import DateSelection from './DateSelection'
 import styles from './Overview.css'
-import StorageStatisticsModal from "../../statistics/StorageStatisticsModal";
+import StorageStatisticsModal from "../../statistics/StorageStatisticsModal"
 
 
 class Overview extends React.Component {
@@ -26,6 +26,7 @@ class Overview extends React.Component {
         this.waitForLocalStorage()
     }
 
+    // get saved content from localstorage
     async waitForLocalStorage () {
         return browser.storage.local.get().then((savedPage) => {
             this.savedPages = savedPage
@@ -33,6 +34,7 @@ class Overview extends React.Component {
         })
     }
 
+    // trigger rerendering
     async update(updatedMetadata, pageId) {
         this.savedPages[pageId].defaultMetadata = updatedMetadata
         this.setState({})
@@ -61,7 +63,7 @@ class Overview extends React.Component {
                         date={this.props.endDate}
                         onDateChange={this.props.onEndDateChange}
                     />
-                    <StorageStatisticsModal customMetadata={this.savedPages}/>
+                    <StorageStatisticsModal customMetadata={this.savedPages} />
                 </div>
                 <div>
                     <ResultList

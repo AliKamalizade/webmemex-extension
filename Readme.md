@@ -73,9 +73,17 @@ source file has been modified.
 If you are testing in Firefox through `npm run firefox`/`web-ext`, the extension should also reload
 automatically. Otherwise, manually press the reload button in the extension list.
 
-### In case of errors
-
-Refresh the application (e.g. go to chrome://extensions) in case context menu does not work.
+### Setup
+1. Clone this repository
+2. Install Yarn package manager (e.g. npm install -g yarn) and run `make` to install dependencies and compile the source files.
+3. * In Firefox (≥49): run `npm run firefox` (or run [web-ext] directly for more control).
+         Alternatively, go to `about:debugging`, choose 'Load Temporary Add-on', and pick
+         `extension/manifest.json` from this repo.
+    * In Chromium/Chrome: go to Tools→Extensions (`chrome://extensions`; Opera: `opera://extensions`),
+        enable 'Developer mode', click 'Load unpacked extension...', and pick the `extension/` folder from this repo.
+4. Run: use npm run watch (Mac, Linux) or npm run win-watch (Windows) to run the web extension
+5. Refresh the application (e.g. go to chrome://extensions) in case the context menu does not work. Go to the extensions
+    page and press `refresh`. This is probably because the extension is installed in development mode.
 
 [WebExtension]: https://developer.mozilla.org/en-US/Add-ons/WebExtensions
 [browserify]: http://browserify.org

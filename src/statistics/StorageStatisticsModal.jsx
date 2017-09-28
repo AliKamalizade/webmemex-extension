@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Icon, Modal, Header, ModalContent, ModalActions } from 'semantic-ui-react'
-import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import WordCloud from 'wordcloud'
 
@@ -14,7 +13,6 @@ class StorageStatisticsModal extends React.Component {
         this.customMetadata = {} // contains references to custom metadata input fields
         this.customMetadataValues = {}
         this.defaultMetadata = {}
-        // this.pageId = this.props.page._id
         this.state = { modalOpen: false }
     }
 
@@ -42,7 +40,6 @@ class StorageStatisticsModal extends React.Component {
                     }
                 }
             }
-            // ReactDOM.render(this.getCustomMetadataList(), this.getCustomMetadataContainerDom())
             try {
                 WordCloud(document.getElementById('storage-statistics'), {list: list, drawOutOfBound: true, gridSize: 16, weightFactor: 1.2})
             } catch (e) {
@@ -69,16 +66,6 @@ class StorageStatisticsModal extends React.Component {
             console.log(e)
         }
     }
-
-    // Create custom metadata list. Each entry consists of a label for a custom type of metadata and of its value
-    // getCustomMetadataList() {
-    //     const result = [...new Array(this.state.numberOfCustomMetadata)].map((el, i) =>
-    //         <li key={i}>
-    //
-    //         </li>
-    //     )
-    //     return <ul style={{ listStyle: 'none', paddingLeft: 0 }}>{result}</ul>
-    // }
 
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
     handleModalOpen() {
