@@ -36,7 +36,9 @@ class Overview extends React.Component {
 
     // trigger rerendering
     async update(updatedMetadata, pageId) {
-        this.savedPages[pageId].defaultMetadata = updatedMetadata
+        if(this.savedPages[pageId]) {
+            this.savedPages[pageId].defaultMetadata = updatedMetadata
+        }
         this.setState({})
     }
 

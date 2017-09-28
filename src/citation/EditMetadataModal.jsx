@@ -12,6 +12,7 @@ class EditMetadataModal extends React.Component {
         this.handleModalOpen = this.handleModalOpen.bind(this)
         this.handleModalClose = this.handleModalClose.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
+        this.deleteRow = this.deleteRow.bind(this)
         this.customMetadata = {} // contains references to custom metadata input fields
         this.customMetadataValues = {}
         this.defaultMetadata = {}
@@ -41,6 +42,11 @@ class EditMetadataModal extends React.Component {
         console.log(this.state)
     }
 
+    // delete a metadata row
+    deleteRow(param) {
+        console.log(param)
+    }
+
     getCustomMetadataContainerDom() {
         return document.getElementById('custom-metadata-container')
     }
@@ -49,7 +55,7 @@ class EditMetadataModal extends React.Component {
     getCustomMetadataList() {
         const result = [...new Array(this.state.numberOfCustomMetadata)].map((el, i) =>
             <li key={i}>
-                <Grid columns={2}>
+                <Grid columns={3}>
                     <GridRow>
                         <GridColumn>
                             <Input
@@ -74,6 +80,11 @@ class EditMetadataModal extends React.Component {
                                 defaultValue={this.customMetadataValues[i]? this.customMetadataValues[i].inputRef.value : null}
                                 ref={(input) => { this.customMetadataValues[i] = input }}
                             />
+                        </GridColumn>
+                        <GridColumn>
+                            <Button color='red' negative title={'Remove this row'} type={'button'} onClick={e => this.deleteRow({label: this.customMetadata[i], value: this.customMetadataValues[i]})}>
+                                <Icon name='delete' /> Remove
+                            </Button>
                         </GridColumn>
                     </GridRow>
                 </Grid>
@@ -133,7 +144,9 @@ class EditMetadataModal extends React.Component {
                     }
                     console.log(this.customMetadata)
                     // console.log(savedPage[this.pageId])
-                    this.setState({customMetadata: savedPage[this.pageId].customMetadata})
+                    if(savedPage[this.pageId]) {
+                        this.setState({customMetadata: savedPage[this.pageId].customMetadata})
+                    }
                 })
             }
             this.setState({metadata: defaultMetadata})

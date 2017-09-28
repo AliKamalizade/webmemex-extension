@@ -3,8 +3,8 @@ import Cite from "citation-js"
 /**
  *
  * @param input DOI or Wikidata or BibTex or BibJSON or CSL-JSON.
- * @param style
- * @param lang
+ * @param style {string}
+ * @param lang {string}
  */
 export async function getCitation(input, style='citation-harvard1', lang = 'en-US') {
     const data = await Cite.async(input)
@@ -108,7 +108,7 @@ export function getInputOptions() {
         },
         {
             text: 'Wikidata',
-            value: 'citation-vancouver',
+            value: 'Wikidata',
         },
     ]
 }
