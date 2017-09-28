@@ -15,6 +15,9 @@ export async function createCitation(input, style='citation-apa', lang = 'en-US'
         lang: lang,
     })
     console.log(result)
+    if(result.length === 1){
+        return 'Invalid input'
+    }
     return result
 }
 

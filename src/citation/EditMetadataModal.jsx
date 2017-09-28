@@ -73,7 +73,7 @@ class EditMetadataModal extends React.Component {
                                 title={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
                                 placeholder={`New Metadata name`}
                                 defaultValue={this.customMetadata[i]? this.customMetadata[i].inputRef.value : null}
-                                minLength={2}
+                                minLength={1}
                                 required
                                 fluid
                                 ref={(input) => { this.customMetadata[i] = input }}
@@ -83,7 +83,7 @@ class EditMetadataModal extends React.Component {
                             <Input
                                 title={`New Metadata value`}
                                 placeholder={`New Metadata value`}
-                                minLength={2}
+                                minLength={1}
                                 required
                                 fluid
                                 defaultValue={this.customMetadataValues[i]? this.customMetadataValues[i].inputRef.value : null}
@@ -134,7 +134,7 @@ class EditMetadataModal extends React.Component {
                             defaultMetadata[key] = savedPage[this.pageId].defaultMetadata[key]
                         }
                         this.setState({metadata: defaultMetadata})
-                        console.log(this.state)
+                        // console.log(this.state)
                         // Insert custom metadata from storage
                         const storedCustomMetadata = Object.keys(savedPage[this.pageId].customMetadata)
                         const numberOfCustomMetadata = storedCustomMetadata.length
@@ -147,7 +147,7 @@ class EditMetadataModal extends React.Component {
                             this.customMetadataValues[i].inputRef.value = value
                         }
                     }
-                    console.log(this.customMetadata)
+                    // console.log(this.customMetadata)
                     // console.log(savedPage[this.pageId])
                     if (savedPage[this.pageId]) {
                         this.setState({customMetadata: savedPage[this.pageId].customMetadata})
@@ -184,7 +184,6 @@ class EditMetadataModal extends React.Component {
                 this.props.parentCallbackToUpdateList(this.state.metadata, this.pageId)
             }
         }
-        // console.log(this.state)
     }
 
     openInGoogleScholar () {

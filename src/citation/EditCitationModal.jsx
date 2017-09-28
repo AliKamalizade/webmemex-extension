@@ -23,7 +23,7 @@ class EditCitationModal extends React.Component {
         this.handleCitationSelectChange = this.handleCitationSelectChange.bind(this)
         this.onCitationClick = this.onCitationClick.bind(this)
         this.handleBibTexSelectChange = this.handleBibTexSelectChange.bind(this)
-        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0, customMetadata: {}, citation: null, selectedCitationOption: this.citationOptions[0].value, selectedBibTexOption: this.bibTexTypes[0].value }
+        this.state = { modalOpen: false, metadata: {}, numberOfCustomMetadata: 0, customMetadata: {}, citation: null, selectedCitationOption: this.citationOptions[0].value, selectedBibTexOption: this.bibTexTypes[0].value, publicationType: '' }
     }
 
     // Reinsert custom metadata when shown again
@@ -100,7 +100,6 @@ class EditCitationModal extends React.Component {
                             defaultMetadata[key] = savedPage[this.pageId].defaultMetadata[key]
                         }
                         this.setState({metadata: defaultMetadata})
-                        // console.log(this.state)
                         // Insert custom metadata from storage
                         const storedCustomMetadata = Object.keys(savedPage[this.pageId].customMetadata)
                         const numberOfCustomMetadata = storedCustomMetadata.length
@@ -113,8 +112,6 @@ class EditCitationModal extends React.Component {
                             this.customMetadataValues[i].inputRef.value = value
                         }
                     }
-                    // console.log(this.customMetadata)
-                    // console.log(savedPage[this.pageId])
                     if (savedPage[this.pageId]) {
                         this.setState({customMetadata: savedPage[this.pageId].customMetadata})
                     }
@@ -124,35 +121,37 @@ class EditCitationModal extends React.Component {
         }
     }
 
-    // Close modal, revert title and save edits in extension storage
+    // Close modal and revert title
     handleModalClose () {
         this.setState({modalOpen: false})
         document.title = this.pageTitle
     }
 
+    // Constructs an object which should be used to generate a citation
     getConstructedInput() {
+        // remove spaces before and after to avoid errors
+        const publicationType = this.state.publicationType.replace(/ /g, '')
+        if( publicationType.length < 1) {
+            return ''
+        }
         const type = this.state.selectedBibTexOption
-        const generalName = `Steinbeck2003`
-        const author = `Steinbeck, Christoph and Han, Yongquan and Kuhn, Stefan and Horlacher, Oliver and Luttmann, Edgar and Willighagen, Egon`
-        const year = `2003`
-        const title = `{{The Chemistry Development Kit (CDK): an open-source Java library for Chemo- and Bioinformatics.}}`
-        const journal = `Journal of chemical information and computer sciences`
-        const volume = `43`
-        const number = `2`
-        const pages = `493--500`
-        const doi = `10.1021/ci025584y`
-        const isbn = `2214707786`
-        const issn = `0095-2338`
-        const pmid = `12653513`
-        const url = `http://www.ncbi.nlm.nih.gov/pubmed/12653513`
-        return `@${type}{${generalName}, author = {${author}},year = {${year}},title = ${title},journal = {${journal}},volume = {${volume}},number = {${number}},pages = {${pages}},doi = {${doi}},isbn = {${isbn}},issn = {${issn}},pmid = {${pmid}},url = {${url}}}`
+        let value = '@' + type + '{' + publicationType + ','
+        const length = Object.keys(this.customMetadata).length
+        for (let i = 0; i < length; i++) {
+            value += this.customMetadata[`${i}`].props.defaultValue + ' = {' + this.customMetadataValues[`${i}`].props.defaultValue + '},'
+            // close the file
+            if ((length - 1) === i){
+                value += 'Title = {' + this.state.metadata.Title + '}}'
+            }
+        }
+        console.log(value)
+        return value
     }
 
     async onCitationClick() {
         console.log(this.state)
-        console.log(this.defaultMetadata)
-        console.log(this.customMetadata)
-        console.log(this.customMetadataValues)
+        // console.log(this.customMetadata)
+        // console.log(this.customMetadataValues)
         const value = this.getConstructedInput()
         // getCitation('Q23571040')
         const cite = await createCitation(value, this.state.selectedCitationOption)
@@ -223,6 +222,18 @@ class EditCitationModal extends React.Component {
                     />
                     <h5>Custom metadata</h5>
                     <div id='custom-citation-container' />
+                    <Input
+                        fluid
+                        icon='id badge'
+                        iconPosition='left'
+                        placeholder={`Publication type is required for BibTex`}
+                        title={`Publication type`}
+                        required
+                        minLength={1}
+                        error={this.state.publicationType.length < 1}
+                        onChange={e => { this.setState({publicationType: e.target.value}) }}
+                        value={this.state.publicationType}
+                    />
                     <Dropdown placeholder='Select citation style' title={'Select citation style'} selection options={this.citationOptions} onChange={this.handleCitationSelectChange} />
                     <Dropdown placeholder='Select input' selection disabled defaultValue={this.inputOptions[0].value} options={this.inputOptions} />
                     <Dropdown placeholder='Select BibTex reference type' title={'Select BibTex reference type'} selection options={this.bibTexTypes} onChange={this.handleBibTexSelectChange} />
@@ -230,7 +241,7 @@ class EditCitationModal extends React.Component {
                 <pre style={{ padding: '20px', whiteSpace: 'normal', border: '1px solid rgba(0,0,0,.15)' }}>
                     {this.state.citation}
                     <CopyToClipboard text={this.state.citation}>
-                        <Button title={'Copy this citation to clipboard'} style={{ display: this.state.citation? 'block' : 'none' }} color='blue'>
+                        <Button title={'Copy this citation to clipboard'} style={{ display: this.state.citation && this.state.citation.length > 15? 'block' : 'none' }} color='blue'>
                             <Icon name='clipboard' /> Copy to clipboard
                         </Button>
                     </CopyToClipboard>
