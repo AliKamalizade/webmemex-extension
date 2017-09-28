@@ -81,3 +81,23 @@ export const loadMoreResults = () => (dispatch, getState) => {
     if (newSearch.isPending() || expandSearch.isPending()) return
     dispatch(expandSearch())
 }
+
+// Function to download metadata or anyy other data as a .txt file
+export function exportAsFile(data, fileName, useStringify) {
+    try {
+        const input = useStringify? JSON.stringify(data) : data
+        const file = new Blob([input], {type: 'text/plain'})
+        const a = document.createElement('a')
+        const url = URL.createObjectURL(file)
+        a.href = url
+        a.download = fileName + '.txt'
+        document.body.appendChild(a)
+        a.click()
+        setTimeout(function () {
+            document.body.removeChild(a)
+            window.URL.revokeObjectURL(url)
+        }, 0)
+    } catch (e) {
+        console.log(e)
+    }
+}

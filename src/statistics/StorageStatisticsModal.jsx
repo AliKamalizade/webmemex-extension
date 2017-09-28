@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Icon, Modal, Header, ModalContent, ModalActions } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
 import WordCloud from 'wordcloud'
+import {exportAsFile} from "../overview/actions"
 
 // A dialog for citations
 class StorageStatisticsModal extends React.Component {
@@ -48,25 +49,6 @@ class StorageStatisticsModal extends React.Component {
         }
     }
 
-    // Function to download metadata as a .txt file
-    exportAsFile() {
-        try {
-            const file = new Blob([JSON.stringify(this.props.customMetadata, null)], {type: 'text/plain'})
-            const a = document.createElement('a')
-            const url = URL.createObjectURL(file)
-            a.href = url
-            a.download = 'WebMemex-Export-Metadata.txt'
-            document.body.appendChild(a)
-            a.click()
-            setTimeout(function () {
-                document.body.removeChild(a)
-                window.URL.revokeObjectURL(url)
-            }, 0)
-        } catch (e) {
-            console.log(e)
-        }
-    }
-
     // Open modal, change tab title. Obtain stored metadata and insert it, else insert default
     handleModalOpen() {
         this.setState({modalOpen: true})
@@ -103,7 +85,7 @@ class StorageStatisticsModal extends React.Component {
                 <Button color='red' negative onClick={e => this.handleModalClose()}>
                     <Icon name='remove' /> Close
                 </Button>
-                <Button color='green' title={'Save metadata as a .txt file'} onClick={e => this.exportAsFile()}>
+                <Button color='green' title={'Save metadata as a .txt file'} onClick={e => exportAsFile(this.props.customMetadata, 'WebMemex-Export-Metadata', true)}>
                     <Icon name='bar graph' /> Export metadata
                 </Button>
             </ModalActions>

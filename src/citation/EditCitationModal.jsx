@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import {getBibTexTypes, createCitation, getCitationStyles, getInputOptions} from "./citation"
 import CopyToClipboard from "react-copy-to-clipboard"
+import {exportAsFile} from "../overview/actions"
 
 // A dialog for citations
 class EditCitationModal extends React.Component {
@@ -134,16 +135,16 @@ class EditCitationModal extends React.Component {
         const length = Object.keys(this.customMetadata).length
         for (let i = 0; i < length; i++) {
             value += this.customMetadata[`${i}`].props.defaultValue + ' = {' + this.customMetadataValues[`${i}`].props.defaultValue + '},'
-            // Finally, append title and close it
+            // Finally, append title as well as URL and close it
             if ((length - 1) === i) {
                 value += 'title = {' + this.state.metadata.Title + '},'
                 value += 'url = {' + this.state.metadata.URL + '}}'
             }
         }
-        console.log(value)
         return value
     }
 
+    // takes metadata and tries to create a result in the specified output format
     async onCitationClick() {
         const value = this.getConstructedInput()
         const cite = await createCitation(value, this.state.selectedCitationOption)
@@ -219,11 +220,16 @@ class EditCitationModal extends React.Component {
                 </form>
                 <pre style={{ padding: '20px', whiteSpace: 'normal', border: '1px solid rgba(0,0,0,.15)' }}>
                     {this.state.citation}
-                    <CopyToClipboard text={this.state.citation}>
-                        <Button title={'Copy this citation to clipboard'} style={{ display: this.state.citation && this.state.citation.length > 15? 'block' : 'none' }} color='blue'>
-                            <Icon name='clipboard' /> Copy to clipboard
+                    <div style={{ marginTop: '10px' }}>
+                        <CopyToClipboard text={this.state.citation}>
+                            <Button title={'Copy this citation to clipboard'} style={{ display: this.state.citation && this.state.citation.length > 15? 'initial' : 'none' }} color='blue'>
+                                <Icon name='clipboard' /> Copy to clipboard
+                            </Button>
+                        </CopyToClipboard>
+                        <Button title={'Download as .txt file'} style={{ display: this.state.citation && this.state.citation.length > 15 && ((this.state.selectedCitationOption === 'bibtex' || this.state.selectedCitationOption === 'bibtxt'))? 'initial' : 'none' }} color='blue' onClick={e => exportAsFile(this.state.citation, 'WebMemex-Export-Citation')}>
+                            <Icon name='download' /> Download
                         </Button>
-                    </CopyToClipboard>
+                    </div>
                 </pre>
             </ModalContent>
             <ModalActions>
