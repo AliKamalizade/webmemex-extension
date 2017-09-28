@@ -37,8 +37,6 @@ class EditMetadataModal extends React.Component {
             browser.storage.local.remove('selectedText')
             this.setState({numberOfCustomMetadata: count, customMetadata: this.customMetadata})
         }
-        // console.log(this.customMetadata)
-        // console.log(this.state)
     }
 
     // delete a metadata row. param contains a label reference and a value reference
@@ -176,7 +174,7 @@ class EditMetadataModal extends React.Component {
                 }
             }
             browser.storage.local.set({[this.pageId]: {defaultMetadata: this.state.metadata, customMetadata: customMetadataToStore}})
-            console.log(browser.storage.local.get(null))
+            // console.log(browser.storage.local.get(null))
             // console.log(browser.storage.local.getBytesInUse())
             if (this.props.parentCallbackToUpdateList) {
                 this.props.parentCallbackToUpdateList(this.state.metadata, this.pageId)

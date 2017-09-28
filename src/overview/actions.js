@@ -82,8 +82,13 @@ export const loadMoreResults = () => (dispatch, getState) => {
     dispatch(expandSearch())
 }
 
-// Function to download metadata or anyy other data as a .txt file
-export function exportAsFile(data, fileName, useStringify) {
+/**
+ * Function to download metadata or any other data as a .txt file*
+ * @param data
+ * @param fileName {string}
+ * @param useStringify {boolean}
+ */
+export function exportAsFile(data, fileName, useStringify = false) {
     try {
         const input = useStringify? JSON.stringify(data) : data
         const file = new Blob([input], {type: 'text/plain'})
