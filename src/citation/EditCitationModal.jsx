@@ -115,7 +115,9 @@ class EditCitationModal extends React.Component {
                     }
                     // console.log(this.customMetadata)
                     // console.log(savedPage[this.pageId])
-                    this.setState({customMetadata: savedPage[this.pageId].customMetadata})
+                    if (savedPage[this.pageId]) {
+                        this.setState({customMetadata: savedPage[this.pageId].customMetadata})
+                    }
                 })
             }
             this.setState({metadata: defaultMetadata})
@@ -228,7 +230,7 @@ class EditCitationModal extends React.Component {
                 <pre style={{ padding: '20px', whiteSpace: 'normal', border: '1px solid rgba(0,0,0,.15)' }}>
                     {this.state.citation}
                     <CopyToClipboard text={this.state.citation}>
-                        <Button title={'Copy to clipboard'} style={{ display: this.state.citation? 'block' : 'none' }} color='blue'>
+                        <Button title={'Copy this citation to clipboard'} style={{ display: this.state.citation? 'block' : 'none' }} color='blue'>
                             <Icon name='clipboard' /> Copy to clipboard
                         </Button>
                     </CopyToClipboard>
