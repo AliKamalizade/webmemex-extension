@@ -10,6 +10,7 @@
   "scripts": {
     "build-prod": "rm -rf ./extension && gulp build-prod",
     "build": "rm -rf ./extension && gulp build",
+    "win-build": "gulp build",
     "watch": "rm -rf ./extension && gulp watch",
     "win-watch": "rd /s /q extension && gulp watch",
     "package": "gulp package",
